@@ -83,7 +83,6 @@ sub __attr_list {
         if (@args) {
           my ($value) = $args[0];
           {
-            q
             local $_ = $value;
             $validator->($_);
           }
@@ -168,7 +167,7 @@ LINE: for my $line (@rest) {
 
     if ( $self->_enable_escapes ) {
       my $regex = $self->_line_escape_regex;
-      $line =~ s{$regex}{}x;
+      $line =~ s{$regex}{}msx;
     }
 
     ${ $stash{$current} } .= $line;
@@ -309,20 +308,12 @@ sub _default_line_escape_regex {
   }msx;
 }
 
-sub _default_default_name {
-  return;
-}
+sub _default_default_name { return }
 
-sub _default_stop_at_end {
-  return;
-}
+sub _default_stop_at_end { return }
 
-sub _default_ignore_empty_prelude {
-  return 1;
-}
+sub _default_ignore_empty_prelude { return 1 }
 
-sub _default_enable_escapes {
-  return undef;
-}
+sub _default_enable_escapes { return }
 
 1;
