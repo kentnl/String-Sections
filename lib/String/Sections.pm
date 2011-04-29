@@ -38,26 +38,47 @@ This module is designed to behave as a work-alike, except on already extracted s
 =cut
 
 use 5.010001;
-use Scalar::Util qw( blessed );
-use Params::Classify qw( check_regexp check_string );
-use Carp qw();
-use Package::Stash;
 
 sub __subname {
   require Sub::Name;
   goto &Sub::Name::subname;
 }
 
+sub __blessed {
+  require Scalar::Util;
+  goto &Scalar::Util::blessed;
+}
+
+sub __package_stash {
+  require Package::Stash;
+  return Package::Stash->new(__PACKAGE__);
+}
+
+sub __confess {
+  require Carp;
+  goto &Carp::confess;
+}
+
+sub __check_regexp {
+  require Params::Classify;
+  goto &Params::Classify::check_regexp;
+}
+
+sub __check_string {
+  require Params::Classify;
+  goto &Params::Classify::check_string;
+}
+
 sub __method_list {
   my (@methods) = @_;
-  my $stash = Package::Stash->new(__PACKAGE__);
+  my $stash = __package_stash();
   for my $methodname (@methods) {
     my $symbolname = q{&} . $methodname;
-    Carp::confess("No such method to curry $methodname") if not $stash->has_symbol($symbolname);
+    __confess("No such method to curry $methodname") if not $stash->has_symbol($symbolname);
     my $method  = $stash->get_symbol($symbolname);
     my $checker = sub {
-      goto $method if blessed $_[0];
-      Carp::confess("Called method $methodname as a function, Argument 0 is expected to be a blessed object");
+      goto $method if __blessed( $_[0] );
+      __confess("Called method $methodname as a function, Argument 0 is expected to be a blessed object");
     };
     __subname( $methodname . '<check:method>', $checker );
     $stash->remove_symbol($symbolname);
@@ -68,7 +89,7 @@ sub __method_list {
 
 sub __attr_list {
   my ( $validator_generator, @attrs ) = @_;
-  my $stash = Package::Stash->new(__PACKAGE__);
+  my $stash = __package_stash();
   for my $attr (@attrs) {
 
     my $validator = $validator_generator->();
@@ -120,7 +141,7 @@ sub __attr_list {
 sub new {
   my ( $class, %args ) = @_;
 
-  $class = blessed $class if blessed $class;
+  $class = __blessed($class) if __blessed($class);
 
   my $config = {};
 
@@ -161,7 +182,7 @@ LINE: for my $line (@rest) {
     }
 
     if ( not defined $current ) {
-      Carp::confess(
+      __confess(
         'bogus data section: text outside named section. line: ' . $line
 
           #. ' self: ' . dump $self
@@ -183,17 +204,17 @@ LINE: for my $line (@rest) {
 
 sub load_string {
   my ( $self, $string ) = @_;
-  Carp::confess 'Not Implemented';
+  return __confess('Not Implemented');
 }
 
 sub load_filehandle {
   my ( $self, $fh ) = @_;
-  Carp::confess 'Not implemented';
+  return __confess('Not implemented');
 }
 
 sub merge {
   my ( $self, $other ) = @_;
-  Carp::confess 'Not Implemented';
+  return __confess('Not Implemented');
 }
 
 sub section_names {
@@ -214,7 +235,7 @@ sub section {
 sub _sections {
   my ($self) = @_;
   if ( not defined $self->{populated} or not $self->{populated} ) {
-    Carp::confess 'Called to a section fetcher without first populating the section stash';
+    __confess('Called to a section fetcher without first populating the section stash');
   }
   return $self->_stash;
 }
@@ -238,7 +259,7 @@ sub _store_stash {
 #
 __attr_list(
   sub {
-    sub { check_regex($_) }
+    sub { __check_regex($_) }
   },
   qw( header_regex empty_line_regex document_end_regex line_escape_regex )
 );
@@ -247,7 +268,7 @@ __attr_list(
 #
 __attr_list(
   sub {
-    sub { not defined $_ or check_string($_) }
+    sub { not defined $_ or __check_string($_) }
   },
   qw( default_name ),
 );
