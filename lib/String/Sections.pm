@@ -42,7 +42,11 @@ use Scalar::Util qw( blessed );
 use Params::Classify qw( check_regexp check_string );
 use Carp qw();
 use Package::Stash;
-use Sub::Name;
+
+sub __subname {
+  require Sub::Name;
+  goto &Sub::Name::subname;
+}
 
 sub __method_list {
   my (@methods) = @_;
@@ -55,7 +59,7 @@ sub __method_list {
       goto $method if blessed $_[0];
       Carp::confess("Called method $methodname as a function, Argument 0 is expected to be a blessed object");
     };
-    subname( $methodname . '<check:method>', $checker );
+    __subname( $methodname . '<check:method>', $checker );
     $stash->remove_symbol($symbolname);
     $stash->add_symbol( $symbolname, $checker );
   }
@@ -74,7 +78,7 @@ sub __attr_list {
     my $default_method_name = '_default_' . $attr;
     my $fieldname           = $attr;
 
-    subname( $fieldname . '<check:validate_value>', $validator );
+    __subname( $fieldname . '<check:validate_value>', $validator );
 
     $stash->add_symbol(
       q{&} . $mutator_name,
@@ -125,7 +129,6 @@ sub new {
   my $object = bless $config, $class;
   return $object;
 }
-use Data::Dump qw( dump );
 
 sub load_list {
   my ( $self, @rest ) = @_;
