@@ -79,20 +79,62 @@ if we don't need them any more.
 
 =cut
 
+=head1 Recommended Use with Data::Handle
+
+This modules primary inspiration is Data::Section, but intending to split and decouple many of the
+internal parts to add leverage to the various behaviors it contains.
+
+Data::Handle solves part of a problem with Perl by providing a more reliable interface to the __DATA__ section in a file that is not impeded by various things that occur if its attempted to be read more than once.
+
+In future, I plan on this being the syntax for connecting Data::Handle with this module to emulate Data::Section:
+
+  my $dh = Data::Handle->new( __PACKAGE__ );
+  my $ss = String::Sections->new( stop_at_end => 1 );
+  $ss->load_filehandle( $dh );
+
+This doesn't implicitly perform any of the inheritance tree magic Data::Section does,
+but its also planned on making that easy to do when you want it with C<< ->merge( $section ) >>
+
+For now, the recommended code is not so different:
+
+  my $dh = Data::Handle->new( __PACKAGE__ );
+  my $ss = String::Sections->new( stop_at_end => 1 );
+  $ss->load_list( <$dh> );
+
+Its just somewhat less efficient.
+
+=cut
+
+# Internal utility functions prefixed by __
+
 sub __require {
   my ($package) = shift;
+
+  # Wrapper for all local calls to 'require' that allows us to add a warning statement
+  # the first time it is called.
+  #
+  # This is mostly for development purposes and will likely be elimiated in future.
+  # -- Kent\n 2011-04-30
   state $loaded;
   $loaded //= {};
   exists $loaded->{$package} or $loaded->{$package} = do {
     $package =~ s{::}{/}gmsx;
     require $package;
+
     # This is here for lazy-loading checking, but commented out for releases.
     # warn "Loaded $_[0]";
     1;
   };
 }
 
+# These stubs exist to lazy-load and redirect to the necessary functions.
+
 sub __subname {
+
+  # This code section exists to add sub routine names to various internal bits
+  # to improve clarity of backtraces during development,
+  # but are commented out for non-development releases, and may be permenantly
+  # removed in a future release -- Kent\n 2011-04-30
   __require 'Sub::Name';
   goto &Sub::Name::subname;
 }
@@ -122,6 +164,12 @@ sub __check_string {
   goto &Params::Classify::check_string;
 }
 
+## Internal method that curries all package functions passed to it
+# so that they check that they're called as a method.
+#
+# Likely removed in a future release, or possibly replaced with something else.
+# -- Kent\n 2011-04-30
+
 sub __method_list {
   my (@methods) = @_;
   my $stash = __package_stash();
@@ -139,6 +187,22 @@ sub __method_list {
   }
   return 1;
 }
+
+## Roll-your-own-attribute generator.
+#
+# Might be replaced/removed in a future release, but depends.
+#
+# __attr_list(sub{
+#   return sub { $validation_code },
+#  } @attribute_names );
+#
+#  Attributes:
+#   1. Have an accessor/mutator with a matching name, which validates
+#      paramters passed to it when used as a setter.
+#   2. Have an internal method with a matching name with a leading _
+#      that populates the attributes value in the stash either from
+#      _default_{$attribute_name} or the arguments passed during construction.
+#      ( with validation )
 
 sub __attr_list {
   my ( $validator_generator, @attrs ) = @_;
@@ -189,6 +253,16 @@ sub __attr_list {
   return 1;
 }
 
+=method new
+
+=method new( %args )
+
+  my $object = String::Sections->new();
+
+  my $object = String::Sections->new( attribute_name => 'value' );
+
+=cut
+
 sub new {
   my ( $class, %args ) = @_;
 
@@ -201,6 +275,39 @@ sub new {
   my $object = bless $config, $class;
   return $object;
 }
+
+=method load_list
+
+=method load_list ( @strings )
+
+=method load_list ( \@strings )
+
+  my @strings = <$fh>;
+
+  $object->load_list( @strings );
+
+  $object->load_list( \@strings );
+
+
+This method handles data as if it had been slopped in un-chomped from a filehandle.
+
+Ideally, each entry in @strings will be terminated with $/ , as the collated data from each section
+is concatentated into a large singular string, ie:
+
+  $object->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
+  $object->section('Foo')
+  # bar
+  # baz
+
+  $object->load_list("__[ Foo ]__\n", "bar", "baz" );
+  $object->section('Foo');
+  # barbaz
+
+  $object->load_list("__[ Foo ]__", "bar", "baz" ) # will not work by default.
+
+This behaviour may change in the future, but this is how it is with the least effort for now.
+
+=cut
 
 sub load_list {
   my ( $self, @rest ) = @_;
@@ -253,35 +360,87 @@ LINE: for my $line (@rest) {
   return 1;
 }
 
+=method load_string
+
+TODO
+
+=cut
+
 sub load_string {
   my ( $self, $string ) = @_;
   return __confess('Not Implemented');
 }
+
+=method load_filehandle
+
+TODO
+
+=cut
 
 sub load_filehandle {
   my ( $self, $fh ) = @_;
   return __confess('Not implemented');
 }
 
+=method merge
+
+TODO
+
+=cut
+
 sub merge {
   my ( $self, $other ) = @_;
   return __confess('Not Implemented');
 }
+
+=method section_names
+
+  my @names = $object->section_names;
+
+Returns a list of the sections that have been extracted so far.
+
+=cut
 
 sub section_names {
   my ($self) = @_;
   return keys %{ $self->_sections };
 }
 
+=method has_section
+
+=method has_section( $name )
+
+  if( $object->has_section('Foo') ){
+    # code
+  }
+
+Determines if the given section name has been extracted.
+
+=cut
+
 sub has_section {
   my ( $self, $section ) = @_;
   return exists $self->_sections->{$section};
 }
 
+=method section
+
+=method section( $name )
+
+  my $str = $object->section('Foo');
+
+  print ${ $str };
+
+This returns a B<REFERENCE> to a String that was parsed from section "Foo".
+
+=cut
+
 sub section {
   my ( $self, $section ) = @_;
   return $self->_sections->{$section};
 }
+
+# Internal check for all things that refer to the sections stash.
 
 sub _sections {
   my ($self) = @_;
@@ -291,12 +450,16 @@ sub _sections {
   return $self->_stash;
 }
 
+# Stash vivifier.
+
 sub _stash {
   my ($self) = @_;
   return $self->{stash} if exists $self->{stash};
   $self->{stash} = {};
   return $self->{stash};
 }
+
+# Stash key value setter. Not yet used anywhere.
 
 sub _store_stash {
   my ( $self, $key, $value ) = @_;
@@ -347,6 +510,8 @@ __method_list(
     enable_escapes _enable_escapes
     )
 );
+
+# Default values for various attributes.
 
 sub _default_header_regex {
   return qr{
