@@ -139,8 +139,8 @@ sub __subname {
   # to improve clarity of backtraces during development,
   # but are commented out for non-development releases, and may be permenantly
   # removed in a future release -- Kent\n 2011-04-30
-  __require 'Sub::Name';
-  goto &Sub::Name::subname;
+  #__require 'Sub::Name';
+  #goto &Sub::Name::subname;
 }
 
 sub __blessed {
