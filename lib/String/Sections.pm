@@ -2,110 +2,16 @@ use strict;
 use warnings;
 
 package String::Sections;
+BEGIN {
+  $String::Sections::VERSION = '0.1.0'; # TRIAL
+}
 
 # ABSTRACT: Extract labelled groups of sub-strings from a string.
 
-=head1 DESCRIPTION
-
-Data Section sports the following default data markup
-
-  __[ somename ]__
-  Data
-  __[ anothername ]__
-  More data
-
-This module is designed to behave as a work-alike, except on already extracted string data.
-
-=head1 SYNOPSIS
-
-
-  use String::Sections;
-
-  my $sections = String::Sections->new();
-  $sections->load_list( @lines );
-  # TODO
-  # $sections->load_string( $string );
-  # $sections->load_filehandle( $fh );
-  #
-  # $sections->merge( $other_sections_object );
-
-  my @section_names = $sections->section_names();
-  if ( $sections->has_section( 'section_label' ) ) {
-    my $string_ref = $sections->section( 'section_label' );
-    ...
-  }
-
-=cut
 
 use 5.010001;
 
-=head1 DEVELOPMENT
 
-This code is still new and under development.
-
-All the below facets are likely to change at some point, but don't
-largely contribute to the API or usage of this module.
-
-=over 4
-
-=item * Needs Perl 5.10.1
-
-To make some of the development features easier.
-
-=item * Rolls its own OO
-
-Because I didn't want to use Moose or anything that would likely be XS dependent
-for the sake of speed , memory consumption, dependency complexity, and portability.
-
-This may change in a future release but you shouldn't care too much.
-
-=item * Some weird code
-
-Mostly the lazy-loading stuff to reduce memory consumption that isn't necessary
-and reduce load time on systems where File IO is slow. ( As IO is one of those bottlenecks
-that's hard to optimise without simply eliminating IO ).
-
-There's some commented out things that are there mostly for use during development,
-such as using Sub::Name to label things for debugging, but are commented out to eliminate
-its XS dependency on deployed installs.
-
-Some of the Lazy-Loaded modules implicitly need XS things, like Params::Classify, but they're only
-required for user specified parameter validation, and will not be either loaded or needed unless you
-wish to deviate from the defaults. ( And even then you can do this without needing XS, just parameters will not
-be validated ).
-
-But these weirdnesses are largely experimental parts that are likely to be factored out at a later stage
-if we don't need them any more.
-
-=back
-
-=cut
-
-=head1 Recommended Use with Data::Handle
-
-This modules primary inspiration is Data::Section, but intending to split and decouple many of the
-internal parts to add leverage to the various behaviors it contains.
-
-Data::Handle solves part of a problem with Perl by providing a more reliable interface to the __DATA__ section in a file that is not impeded by various things that occur if its attempted to be read more than once.
-
-In future, I plan on this being the syntax for connecting Data::Handle with this module to emulate Data::Section:
-
-  my $dh = Data::Handle->new( __PACKAGE__ );
-  my $ss = String::Sections->new( stop_at_end => 1 );
-  $ss->load_filehandle( $dh );
-
-This doesn't implicitly perform any of the inheritance tree magic Data::Section does,
-but its also planned on making that easy to do when you want it with C<< ->merge( $section ) >>
-
-For now, the recommended code is not so different:
-
-  my $dh = Data::Handle->new( __PACKAGE__ );
-  my $ss = String::Sections->new( stop_at_end => 1 );
-  $ss->load_list( <$dh> );
-
-Its just somewhat less efficient.
-
-=cut
 
 # Internal utility functions prefixed by __
 
@@ -257,15 +163,6 @@ sub __attr_list {
   return 1;
 }
 
-=method new
-
-=method new( %args )
-
-  my $object = String::Sections->new();
-
-  my $object = String::Sections->new( attribute_name => 'value' );
-
-=cut
 
 sub new {
   my ( $class, %args ) = @_;
@@ -280,38 +177,6 @@ sub new {
   return $object;
 }
 
-=method load_list
-
-=method load_list ( @strings )
-
-=method load_list ( \@strings )
-
-  my @strings = <$fh>;
-
-  $object->load_list( @strings );
-
-  $object->load_list( \@strings );
-
-
-This method handles data as if it had been slopped in unchomped from a filehandle.
-
-Ideally, each entry in @strings will be terminated with $/ , as the collated data from each section
-is concatenated into a large singular string, e.g.:
-
-  $object->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
-  $object->section('Foo')
-  # bar
-  # baz
-
-  $object->load_list("__[ Foo ]__\n", "bar", "baz" );
-  $object->section('Foo');
-  # barbaz
-
-  $object->load_list("__[ Foo ]__", "bar", "baz" ) # will not work by default.
-
-This behaviour may change in the future, but this is how it is with the least effort for now.
-
-=cut
 
 sub load_list {
   my ( $self, @rest ) = @_;
@@ -364,80 +229,36 @@ LINE: for my $line (@rest) {
   return 1;
 }
 
-=method load_string
-
-TODO
-
-=cut
 
 sub load_string {
   my ( $self, $string ) = @_;
   return __confess('Not Implemented');
 }
 
-=method load_filehandle
-
-TODO
-
-=cut
 
 sub load_filehandle {
   my ( $self, $fh ) = @_;
   return __confess('Not implemented');
 }
 
-=method merge
-
-TODO
-
-=cut
 
 sub merge {
   my ( $self, $other ) = @_;
   return __confess('Not Implemented');
 }
 
-=method section_names
-
-  my @names = $object->section_names;
-
-Returns a list of the sections that have been extracted so far.
-
-=cut
 
 sub section_names {
   my ($self) = @_;
   return keys %{ $self->_sections };
 }
 
-=method has_section
-
-=method has_section( $name )
-
-  if( $object->has_section('Foo') ){
-    # code
-  }
-
-Determines if the given section name has been extracted.
-
-=cut
 
 sub has_section {
   my ( $self, $section ) = @_;
   return exists $self->_sections->{$section};
 }
 
-=method section
-
-=method section( $name )
-
-  my $str = $object->section('Foo');
-
-  print ${ $str };
-
-This returns a B<REFERENCE> to a String that was parsed from section "Foo".
-
-=cut
 
 sub section {
   my ( $self, $section ) = @_;
@@ -561,3 +382,199 @@ sub _default_ignore_empty_prelude { return 1 }
 sub _default_enable_escapes { return }
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+String::Sections - Extract labelled groups of sub-strings from a string.
+
+=head1 VERSION
+
+version 0.1.0
+
+=head1 SYNOPSIS
+
+  use String::Sections;
+
+  my $sections = String::Sections->new();
+  $sections->load_list( @lines );
+  # TODO
+  # $sections->load_string( $string );
+  # $sections->load_filehandle( $fh );
+  #
+  # $sections->merge( $other_sections_object );
+
+  my @section_names = $sections->section_names();
+  if ( $sections->has_section( 'section_label' ) ) {
+    my $string_ref = $sections->section( 'section_label' );
+    ...
+  }
+
+=head1 DESCRIPTION
+
+Data Section sports the following default data markup
+
+  __[ somename ]__
+  Data
+  __[ anothername ]__
+  More data
+
+This module is designed to behave as a work-alike, except on already extracted string data.
+
+=head1 METHODS
+
+=head2 new
+
+=head2 new( %args )
+
+  my $object = String::Sections->new();
+
+  my $object = String::Sections->new( attribute_name => 'value' );
+
+=head2 load_list
+
+=head2 load_list ( @strings )
+
+=head2 load_list ( \@strings )
+
+  my @strings = <$fh>;
+
+  $object->load_list( @strings );
+
+  $object->load_list( \@strings );
+
+This method handles data as if it had been slopped in unchomped from a filehandle.
+
+Ideally, each entry in @strings will be terminated with $/ , as the collated data from each section
+is concatenated into a large singular string, e.g.:
+
+  $object->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
+  $object->section('Foo')
+  # bar
+  # baz
+
+  $object->load_list("__[ Foo ]__\n", "bar", "baz" );
+  $object->section('Foo');
+  # barbaz
+
+  $object->load_list("__[ Foo ]__", "bar", "baz" ) # will not work by default.
+
+This behaviour may change in the future, but this is how it is with the least effort for now.
+
+=head2 load_string
+
+TODO
+
+=head2 load_filehandle
+
+TODO
+
+=head2 merge
+
+TODO
+
+=head2 section_names
+
+  my @names = $object->section_names;
+
+Returns a list of the sections that have been extracted so far.
+
+=head2 has_section
+
+=head2 has_section( $name )
+
+  if( $object->has_section('Foo') ){
+    # code
+  }
+
+Determines if the given section name has been extracted.
+
+=head2 section
+
+=head2 section( $name )
+
+  my $str = $object->section('Foo');
+
+  print ${ $str };
+
+This returns a B<REFERENCE> to a String that was parsed from section "Foo".
+
+=head1 DEVELOPMENT
+
+This code is still new and under development.
+
+All the below facets are likely to change at some point, but don't
+largely contribute to the API or usage of this module.
+
+=over 4
+
+=item * Needs Perl 5.10.1
+
+To make some of the development features easier.
+
+=item * Rolls its own OO
+
+Because I didn't want to use Moose or anything that would likely be XS dependent
+for the sake of speed , memory consumption, dependency complexity, and portability.
+
+This may change in a future release but you shouldn't care too much.
+
+=item * Some weird code
+
+Mostly the lazy-loading stuff to reduce memory consumption that isn't necessary
+and reduce load time on systems where File IO is slow. ( As IO is one of those bottlenecks
+that's hard to optimise without simply eliminating IO ).
+
+There's some commented out things that are there mostly for use during development,
+such as using Sub::Name to label things for debugging, but are commented out to eliminate
+its XS dependency on deployed installs.
+
+Some of the Lazy-Loaded modules implicitly need XS things, like Params::Classify, but they're only
+required for user specified parameter validation, and will not be either loaded or needed unless you
+wish to deviate from the defaults. ( And even then you can do this without needing XS, just parameters will not
+be validated ).
+
+But these weirdnesses are largely experimental parts that are likely to be factored out at a later stage
+if we don't need them any more.
+
+=back
+
+=head1 Recommended Use with Data::Handle
+
+This modules primary inspiration is Data::Section, but intending to split and decouple many of the
+internal parts to add leverage to the various behaviors it contains.
+
+Data::Handle solves part of a problem with Perl by providing a more reliable interface to the __DATA__ section in a file that is not impeded by various things that occur if its attempted to be read more than once.
+
+In future, I plan on this being the syntax for connecting Data::Handle with this module to emulate Data::Section:
+
+  my $dh = Data::Handle->new( __PACKAGE__ );
+  my $ss = String::Sections->new( stop_at_end => 1 );
+  $ss->load_filehandle( $dh );
+
+This doesn't implicitly perform any of the inheritance tree magic Data::Section does,
+but its also planned on making that easy to do when you want it with C<< ->merge( $section ) >>
+
+For now, the recommended code is not so different:
+
+  my $dh = Data::Handle->new( __PACKAGE__ );
+  my $ss = String::Sections->new( stop_at_end => 1 );
+  $ss->load_list( <$dh> );
+
+Its just somewhat less efficient.
+
+=head1 AUTHOR
+
+Kent Fredric <kentnl@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Kent Fredric <kentnl@cpan.org>.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
