@@ -63,19 +63,21 @@ This may change in a future release but you shouldn't care too much.
 
 Mostly the lazy-loading stuff to reduce memory consumption that isn't necessary
 and reduce load time on systems where File IO is slow. ( As IO is one of those bottlenecks
-thats hard to optimise without simply eliminating IO ).
+that's hard to optimise without simply eliminating IO ).
 
 There's some commented out things that are there mostly for use during development,
 such as using Sub::Name to label things for debugging, but are commented out to eliminate
 its XS dependency on deployed installs.
 
 Some of the Lazy-Loaded modules implicitly need XS things, like Params::Classify, but they're only
-required for user specified paramter validation, and will not be either loaded or needed unless you
+required for user specified parameter validation, and will not be either loaded or needed unless you
 wish to deviate from the defaults. ( And even then you can do this without needing XS, just parameters will not
 be validated ).
 
-But these weirdnesss are largely experimental parts that are likely to be factored out at a later stage
+But these weirdnesses are largely experimental parts that are likely to be factored out at a later stage
 if we don't need them any more.
+
+=back
 
 =cut
 
@@ -119,12 +121,14 @@ sub __require {
   $loaded //= {};
   exists $loaded->{$package} or $loaded->{$package} = do {
     $package =~ s{::}{/}gmsx;
+    $package .= '.pm';
     require $package;
 
     # This is here for lazy-loading checking, but commented out for releases.
     # warn "Loaded $_[0]";
     1;
   };
+  return 1;
 }
 
 # These stubs exist to lazy-load and redirect to the necessary functions.
@@ -289,10 +293,10 @@ sub new {
   $object->load_list( \@strings );
 
 
-This method handles data as if it had been slopped in un-chomped from a filehandle.
+This method handles data as if it had been slopped in unchomped from a filehandle.
 
 Ideally, each entry in @strings will be terminated with $/ , as the collated data from each section
-is concatentated into a large singular string, ie:
+is concatenated into a large singular string, e.g.:
 
   $object->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
   $object->section('Foo')
