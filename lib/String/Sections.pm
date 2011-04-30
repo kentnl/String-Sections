@@ -39,33 +39,86 @@ This module is designed to behave as a work-alike, except on already extracted s
 
 use 5.010001;
 
+=head1 DEVELOPMENT
+
+This code is still new and under development.
+
+All the below facets are likely to change at some point, but don't
+largely contribute to the API or usage of this module.
+
+=over 4
+
+=item * Needs Perl 5.10.1
+
+To make some of the development features easier.
+
+=item * Rolls its own OO
+
+Because I didn't want to use Moose or anything that would likely be XS dependent
+for the sake of speed , memory consumption, dependency complexity, and portability.
+
+This may change in a future release but you shouldn't care too much.
+
+=item * Some weird code
+
+Mostly the lazy-loading stuff to reduce memory consumption that isn't necessary
+and reduce load time on systems where File IO is slow. ( As IO is one of those bottlenecks
+thats hard to optimise without simply eliminating IO ).
+
+There's some commented out things that are there mostly for use during development,
+such as using Sub::Name to label things for debugging, but are commented out to eliminate
+its XS dependency on deployed installs.
+
+Some of the Lazy-Loaded modules implicitly need XS things, like Params::Classify, but they're only
+required for user specified paramter validation, and will not be either loaded or needed unless you
+wish to deviate from the defaults. ( And even then you can do this without needing XS, just parameters will not
+be validated ).
+
+But these weirdnesss are largely experimental parts that are likely to be factored out at a later stage
+if we don't need them any more.
+
+=cut
+
+sub __require {
+  my ($package) = shift;
+  state $loaded;
+  $loaded //= {};
+  exists $loaded->{$package} or $loaded->{$package} = do {
+    $package =~ s{::}{/}gmsx;
+    require $package;
+    # This is here for lazy-loading checking, but commented out for releases.
+    # warn "Loaded $_[0]";
+    1;
+  };
+}
+
 sub __subname {
-  require Sub::Name;
+  __require 'Sub::Name';
   goto &Sub::Name::subname;
 }
 
 sub __blessed {
-  require Scalar::Util;
+  __require 'Scalar::Util';
   goto &Scalar::Util::blessed;
 }
 
 sub __package_stash {
-  require Package::Stash;
+  __require 'Package::Stash';
   return Package::Stash->new(__PACKAGE__);
 }
 
 sub __confess {
-  require Carp;
+  __require 'Carp';
   goto &Carp::confess;
 }
 
 sub __check_regexp {
-  require Params::Classify;
+  __require 'Params::Classify';
   goto &Params::Classify::check_regexp;
 }
 
 sub __check_string {
-  require Params::Classify;
+  __require 'Params::Classify';
   goto &Params::Classify::check_string;
 }
 
@@ -102,8 +155,7 @@ sub __attr_list {
     __subname( $fieldname . '<check:validate_value>', $validator );
 
     $stash->add_symbol(
-      q{&} . $mutator_name,
-      sub {
+      q{&} . $mutator_name => sub {
         my ( $self, @args ) = @_;
         if (@args) {
           my ($value) = $args[0];
@@ -118,8 +170,7 @@ sub __attr_list {
     );
 
     $stash->add_symbol(
-      q{&} . $internal_name,
-      sub {
+      q{&} . $internal_name => sub {
         my ($self) = @_;
         return $self->{$fieldname} if exists $self->{$fieldname};
         if ( not exists $self->{args} or not exists $self->{args}->{$fieldname} ) {
