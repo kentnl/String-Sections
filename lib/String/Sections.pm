@@ -280,6 +280,44 @@ sub new {
   return $object;
 }
 
+sub __add_line {
+
+  my ( $self, $stash, $line, $current ) = @_;
+
+  if ( ${$line} =~ $self->_header_regex ) {
+    my $blank = q{};
+    ${$current} = $1;
+    $stash->{ ${$current} } = \$blank;
+    return 1;    # 1 is next.
+  }
+
+  # not valid for lists because lists are not likely to have __END__ in them.
+  if ( $self->_stop_at_end ) {
+    return 0 if ${$line} =~ $self->_document_end_regex;
+  }
+
+  if ( $self->_ignore_empty_prelude ) {
+    return 1 if not defined ${$current} and ${$line} =~ $self->_empty_line_regex;
+  }
+
+  if ( not defined ${$current} ) {
+    __confess(
+      'bogus data section: text outside named section. line: ' . ${$line}
+
+        #. ' self: ' . dump $self
+    );
+  }
+
+  if ( $self->_enable_escapes ) {
+    my $regex = $self->_line_escape_regex;
+    ${$line} =~ s{$regex}{}msx;
+  }
+
+  ${ $stash->{ ${$current} } } .= ${$line};
+
+  return 1;
+}
+
 =method load_list
 
 =method load_list ( @strings )
@@ -325,38 +363,11 @@ sub load_list {
     $stash{ $self->_default_name } = \$blank;
   }
 
-LINE: for my $line (@rest) {
+  for my $line (@rest) {
+    my $result = __add_line( $self, \%stash, \$line, \$current );
+    next if $result;
+    last if not $result;
 
-    if ( $line =~ $self->_header_regex ) {
-      my $blank = q{};
-      $current = $1;
-      $stash{$current} = \$blank;
-      next LINE;
-    }
-
-    # not valid for lists because lists are not likely to have __END__ in them.
-    if ( $self->_stop_at_end ) {
-      last LINE if $line =~ $self->_document_end_regex;
-    }
-
-    if ( $self->_ignore_empty_prelude ) {
-      next LINE if not defined $current and $line =~ $self->_empty_line_regex;
-    }
-
-    if ( not defined $current ) {
-      __confess(
-        'bogus data section: text outside named section. line: ' . $line
-
-          #. ' self: ' . dump $self
-      );
-    }
-
-    if ( $self->_enable_escapes ) {
-      my $regex = $self->_line_escape_regex;
-      $line =~ s{$regex}{}msx;
-    }
-
-    ${ $stash{$current} } .= $line;
   }
 
   $self->{stash}     = \%stash;
@@ -383,7 +394,24 @@ TODO
 
 sub load_filehandle {
   my ( $self, $fh ) = @_;
-  return __confess('Not implemented');
+  my %stash;
+  my $current;
+
+  if ( $self->_default_name ) {
+    my $blank = q{};
+    $current = $self->_default_name;
+    $stash{ $self->_default_name } = \$blank;
+  }
+  while ( defined( my $line = <$fh> ) ) {
+    my $result = __add_line( $self, \%stash, \$line, \$current );
+    next if $result;
+    last if not $result;
+  }
+
+  $self->{stash}     = \%stash;
+  $self->{populated} = 1;
+  return 1;
+
 }
 
 =method merge
