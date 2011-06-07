@@ -1,6 +1,8 @@
 Release history for String-Sections
 
 {{$NEXT}}
+
+0.1.1 2011-06-07T16:22:34Z
  [Dependencies]
  - No longer uses Package::Stash
  - Adds Moo and Sub::Quote ( part of Moo )
