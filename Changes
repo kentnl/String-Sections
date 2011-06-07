@@ -1,6 +1,11 @@
 Release history for String-Sections
 
 {{$NEXT}}
+ [Dependencies]
+ - No longer uses Package::Stash
+ - Adds Moo and Sub::Quote ( part of Moo )
+ - No longer recommends Sub::Name for develop time.
+
  [Documentation]
  - Eliminated Documentation referring to experiemental ideas that are now
    righly removed.

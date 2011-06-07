@@ -54,6 +54,8 @@ largely contribute to the API or usage of this module.
 
 To make some of the development features easier.
 
+=back
+
 =cut
 
 =head1 Recommended Use with Data::Handle
@@ -286,6 +288,7 @@ sub section {
   return $self->_sections->{$section};
 }
 
+## no critic( RequireInterpolationOfMetachars )
 has '_sections' => (
   is      => 'rw',
   isa     => quote_sub(q{ if ( ref $_[0] ne 'HASH' ){ require Carp; Carp::confess('_sections must be a hash'); } }),
@@ -300,7 +303,7 @@ has '_sections' => (
 for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
   has $_ => (
     is      => 'rw',
-    isa     => quote_sub(q{ require Params::Classify; Params::Classify::check_regexp( $_[0] ) }),
+    isa     => quote_sub(q| require Params::Classify; Params::Classify::check_regexp( $_[0] ) |),
     builder => '_default_' . $_,
     lazy    => 1,
   );
@@ -310,14 +313,10 @@ for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
 #
 
 for (qw( default_name )) {
+
   has $_ => (
-    is  => 'rw',
-    isa => quote_sub(
-      q{  if( defined  $_[0] ){
-          require Params::Classify;
-          Params::Classift::check_string( $_[0] );
-      }}
-    ),
+    is      => 'rw',
+    isa     => quote_sub(q| if( defined  $_[0] ){  require Params::Classify; Params::Classift::check_string( $_[0] ); } |),
     builder => '_default_' . $_,
     lazy    => 1,
   );
@@ -326,15 +325,8 @@ for (qw( default_name )) {
 # Boolean Accessors
 for (qw( stop_at_end ignore_empty_prelude enable_escapes )) {
   has $_ => (
-    is  => 'rw',
-    isa => quote_sub(
-      q{
-      if( ref $_[0] ){
-        require Carp;
-        Carp::confess("$_[0] is not a valid boolean value");
-      }
-    }
-    ),
+    is      => 'rw',
+    isa     => quote_sub(q|  if( ref $_[0] ){ require Carp; Carp::confess("$_[0] is not a valid boolean value"); }  |),
     builder => '_default_' . $_,
     lazy    => 1,
   );
@@ -351,14 +343,10 @@ for (
   )
   )
 {
-  before $_ => quote_sub(
-    q{
-    require Scalar::Util;
-    if ( not Scalar::Util::blessed($_[0]) ){
-      require Carp;
-      Carp::confess("Called method } . $_ . q{ as a function, Argument 0 is expected to be a blessed object");
-    }}
-  );
+  before $_ =>
+    quote_sub(q| require Scalar::Util; if ( not Scalar::Util::blessed($_[0]) ){ require Carp; Carp::confess("Called method |
+      . $_
+      . q| as a function, Argument 0 is expected to be a blessed object");} | );
 }
 
 # Default values for various attributes.
