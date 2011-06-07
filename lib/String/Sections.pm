@@ -38,6 +38,8 @@ This module is designed to behave as a work-alike, except on already extracted s
 =cut
 
 use 5.010001;
+use Moo;
+use Sub::Quote qw{ quote_sub };
 
 =head1 DEVELOPMENT
 
@@ -107,156 +109,6 @@ Its just somewhat less efficient.
 
 =cut
 
-# Internal utility functions prefixed by __
-
-sub __require {
-  my ($package) = shift;
-
-  # Wrapper for all local calls to 'require' that allows us to add a warning statement
-  # the first time it is called.
-  #
-  # This is mostly for development purposes and will likely be elimiated in future.
-  # -- Kent\n 2011-04-30
-  state $loaded;
-  $loaded //= {};
-  exists $loaded->{$package} or $loaded->{$package} = do {
-    $package =~ s{::}{/}gmsx;
-    $package .= '.pm';
-    require $package;
-
-    # This is here for lazy-loading checking, but commented out for releases.
-    # warn "Loaded $_[0]";
-    1;
-  };
-  return 1;
-}
-
-# These stubs exist to lazy-load and redirect to the necessary functions.
-
-sub __subname {
-
-  # This code section exists to add sub routine names to various internal bits
-  # to improve clarity of backtraces during development,
-  # but are commented out for non-development releases, and may be permenantly
-  # removed in a future release -- Kent\n 2011-04-30
-  #__require 'Sub::Name';
-  #goto &Sub::Name::subname;
-}
-
-sub __blessed {
-  __require 'Scalar::Util';
-  goto &Scalar::Util::blessed;
-}
-
-sub __package_stash {
-  __require 'Package::Stash';
-  return Package::Stash->new(__PACKAGE__);
-}
-
-sub __confess {
-  __require 'Carp';
-  goto &Carp::confess;
-}
-
-sub __check_regexp {
-  __require 'Params::Classify';
-  goto &Params::Classify::check_regexp;
-}
-
-sub __check_string {
-  __require 'Params::Classify';
-  goto &Params::Classify::check_string;
-}
-
-## Internal method that curries all package functions passed to it
-# so that they check that they're called as a method.
-#
-# Likely removed in a future release, or possibly replaced with something else.
-# -- Kent\n 2011-04-30
-
-sub __method_list {
-  my (@methods) = @_;
-  my $stash = __package_stash();
-  for my $methodname (@methods) {
-    my $symbolname = q{&} . $methodname;
-    __confess("No such method to curry $methodname") if not $stash->has_symbol($symbolname);
-    my $method  = $stash->get_symbol($symbolname);
-    my $checker = sub {
-      goto $method if __blessed( $_[0] );
-      __confess("Called method $methodname as a function, Argument 0 is expected to be a blessed object");
-    };
-    __subname( $methodname . '<check:method>', $checker );
-    $stash->remove_symbol($symbolname);
-    $stash->add_symbol( $symbolname, $checker );
-  }
-  return 1;
-}
-
-## Roll-your-own-attribute generator.
-#
-# Might be replaced/removed in a future release, but depends.
-#
-# __attr_list(sub{
-#   return sub { $validation_code },
-#  } @attribute_names );
-#
-#  Attributes:
-#   1. Have an accessor/mutator with a matching name, which validates
-#      paramters passed to it when used as a setter.
-#   2. Have an internal method with a matching name with a leading _
-#      that populates the attributes value in the stash either from
-#      _default_{$attribute_name} or the arguments passed during construction.
-#      ( with validation )
-
-sub __attr_list {
-  my ( $validator_generator, @attrs ) = @_;
-  my $stash = __package_stash();
-  for my $attr (@attrs) {
-
-    my $validator = $validator_generator->();
-
-    my $internal_name       = '_' . $attr;
-    my $mutator_name        = $attr;
-    my $default_method_name = '_default_' . $attr;
-    my $fieldname           = $attr;
-
-    __subname( $fieldname . '<check:validate_value>', $validator );
-
-    $stash->add_symbol(
-      q{&} . $mutator_name => sub {
-        my ( $self, @args ) = @_;
-        if (@args) {
-          my ($value) = $args[0];
-          {
-            local $_ = $value;
-            $validator->($_);
-          }
-          $self->{$fieldname} = $value;
-        }
-        return $self->can($internal_name)->($self);
-      }
-    );
-
-    $stash->add_symbol(
-      q{&} . $internal_name => sub {
-        my ($self) = @_;
-        return $self->{$fieldname} if exists $self->{$fieldname};
-        if ( not exists $self->{args} or not exists $self->{args}->{$fieldname} ) {
-          $self->{$fieldname} = $self->can($default_method_name)->($self);
-          return $self->{$fieldname};
-        }
-        {
-          local $_ = $self->{args}->{$fieldname};
-          $validator->($_);
-        }
-        $self->{$fieldname} = $self->{args}->{$fieldname};
-        return $self->{$fieldname};
-      }
-    );
-  }
-  return 1;
-}
-
 =method new
 
 =method new( %args )
@@ -267,24 +119,11 @@ sub __attr_list {
 
 =cut
 
-sub new {
-  my ( $class, %args ) = @_;
-
-  $class = __blessed($class) if __blessed($class);
-
-  my $config = {};
-
-  $config->{args} = \%args if %args;
-
-  my $object = bless $config, $class;
-  return $object;
-}
-
 sub __add_line {
 
   my ( $self, $stash, $line, $current ) = @_;
 
-  if ( ${$line} =~ $self->_header_regex ) {
+  if ( ${$line} =~ $self->header_regex ) {
     my $blank = q{};
     ${$current} = $1;
     $stash->{ ${$current} } = \$blank;
@@ -292,24 +131,25 @@ sub __add_line {
   }
 
   # not valid for lists because lists are not likely to have __END__ in them.
-  if ( $self->_stop_at_end ) {
-    return 0 if ${$line} =~ $self->_document_end_regex;
+  if ( $self->stop_at_end ) {
+    return 0 if ${$line} =~ $self->document_end_regex;
   }
 
-  if ( $self->_ignore_empty_prelude ) {
-    return 1 if not defined ${$current} and ${$line} =~ $self->_empty_line_regex;
+  if ( $self->ignore_empty_prelude ) {
+    return 1 if not defined ${$current} and ${$line} =~ $self->empty_line_regex;
   }
 
   if ( not defined ${$current} ) {
-    __confess(
+    require Carp;
+    Carp::confess(
       'bogus data section: text outside named section. line: ' . ${$line}
 
         #. ' self: ' . dump $self
     );
   }
 
-  if ( $self->_enable_escapes ) {
-    my $regex = $self->_line_escape_regex;
+  if ( $self->enable_escapes ) {
+    my $regex = $self->line_escape_regex;
     ${$line} =~ s{$regex}{}msx;
   }
 
@@ -357,10 +197,10 @@ sub load_list {
   my %stash;
   my $current;
 
-  if ( $self->_default_name ) {
+  if ( $self->default_name ) {
     my $blank = q{};
-    $current = $self->_default_name;
-    $stash{ $self->_default_name } = \$blank;
+    $current = $self->default_name;
+    $stash{ $self->default_name } = \$blank;
   }
 
   for my $line (@rest) {
@@ -369,9 +209,7 @@ sub load_list {
     last if not $result;
 
   }
-
-  $self->{stash}     = \%stash;
-  $self->{populated} = 1;
+  $self->_sections( \%stash );
   return 1;
 }
 
@@ -383,12 +221,15 @@ TODO
 
 sub load_string {
   my ( $self, $string ) = @_;
-  return __confess('Not Implemented');
+  require Carp;
+  return Carp::confess('Not Implemented');
 }
 
 =method load_filehandle
 
-TODO
+=method load_filehandle( $fh )
+
+  $object->load_filehandle( $fh )
 
 =cut
 
@@ -408,8 +249,7 @@ sub load_filehandle {
     last if not $result;
   }
 
-  $self->{stash}     = \%stash;
-  $self->{populated} = 1;
+  $self->_sections( \%stash );
   return 1;
 
 }
@@ -422,7 +262,8 @@ TODO
 
 sub merge {
   my ( $self, $other ) = @_;
-  return __confess('Not Implemented');
+  require Carp;
+  return Carp::confess('Not Implemented');
 }
 
 =method section_names
@@ -472,76 +313,80 @@ sub section {
   return $self->_sections->{$section};
 }
 
-# Internal check for all things that refer to the sections stash.
-
-sub _sections {
-  my ($self) = @_;
-  if ( not defined $self->{populated} or not $self->{populated} ) {
-    __confess('Called to a section fetcher without first populating the section stash');
-  }
-  return $self->_stash;
-}
-
-# Stash vivifier.
-
-sub _stash {
-  my ($self) = @_;
-  return $self->{stash} if exists $self->{stash};
-  $self->{stash} = {};
-  return $self->{stash};
-}
-
-# Stash key value setter. Not yet used anywhere.
-
-sub _store_stash {
-  my ( $self, $key, $value ) = @_;
-  $self->_stash->{$key} = $value;
-  return $value;
-}
+has '_sections' => (
+  is      => 'rw',
+  isa     => quote_sub(q{ if ( ref $_[0] ne 'HASH' ){ require Carp; Carp::confess('_sections must be a hash'); } }),
+  lazy    => 1,
+  default => quote_sub(q{ require Carp; Carp::confess('tried to get data from sections without first populating with data');}),
+);
 
 #
 # Defines accessors *_regex and _*_regex , that are for public and private access respectively.
 # Defaults to _default_*_regex.
-#
-__attr_list(
-  sub {
-    sub { __check_regex($_) }
-  },
-  qw( header_regex empty_line_regex document_end_regex line_escape_regex )
-);
+
+for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
+  has $_ => (
+    is      => 'rw',
+    isa     => quote_sub(q{ require Params::Classify; Params::Classify::check_regexp( $_[0] ) }),
+    builder => '_default_' . $_,
+    lazy    => 1,
+  );
+}
 
 # String | Undef accessors.
 #
-__attr_list(
-  sub {
-    sub { not defined $_ or __check_string($_) }
-  },
-  qw( default_name ),
-);
+
+for (qw( default_name )) {
+  has $_ => (
+    is  => 'rw',
+    isa => quote_sub(
+      q{  if( defined  $_[0] ){
+          require Params::Classify;
+          Params::Classift::check_string( $_[0] );
+      }}
+    ),
+    builder => '_default_' . $_,
+    lazy    => 1,
+  );
+}
 
 # Boolean Accessors
-__attr_list(
-  sub {
-    sub { 1; }
-  },
-  qw( stop_at_end ignore_empty_prelude enable_escapes ),
-);
+for (qw( stop_at_end ignore_empty_prelude enable_escapes )) {
+  has $_ => (
+    is  => 'rw',
+    isa => quote_sub(
+      q{
+      if( ref $_[0] ){
+        require Carp;
+        Carp::confess("$_[0] is not a valid boolean value");
+      }
+    }
+    ),
+    builder => '_default_' . $_,
+    lazy    => 1,
+  );
+}
 
 # Go through all these methods and curry them to do method checks.
 
-__method_list(
+for (
   qw(
-    load_list load_string load_filehandle merge section_names has_section section _sections _stash _store_stash
-    header_regex _header_regex
-    empty_line_regex _empty_line_regex
-    document_end_regex _document_end_regex
-    line_escape_regex  _line_escape_regex
-    default_name _default_name
-    stop_at_end _stop_at_end
-    ignore_empty_prelude _ignore_empty_prelude
-    enable_escapes _enable_escapes
-    )
-);
+  load_list load_string load_filehandle merge section_names has_section section _sections
+  stop_at_end ignore_empty_prelude enable_escapes
+  default_name
+  header_regex empty_line_regex document_end_regex line_escape_regex
+  )
+  )
+{
+  before $_ => quote_sub(
+    q{
+    require Scalar::Util;
+    if ( not Scalar::Util::blessed($_[0]) ){
+      require Carp;
+      Carp::confess("Called method } . $_ . q{ as a function, Argument 0 is expected to be a blessed object");
+    }}
+  );
+}
 
 # Default values for various attributes.
 
