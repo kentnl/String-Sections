@@ -54,33 +54,6 @@ largely contribute to the API or usage of this module.
 
 To make some of the development features easier.
 
-=item * Rolls its own OO
-
-Because I didn't want to use Moose or anything that would likely be XS dependent
-for the sake of speed , memory consumption, dependency complexity, and portability.
-
-This may change in a future release but you shouldn't care too much.
-
-=item * Some weird code
-
-Mostly the lazy-loading stuff to reduce memory consumption that isn't necessary
-and reduce load time on systems where File IO is slow. ( As IO is one of those bottlenecks
-that's hard to optimise without simply eliminating IO ).
-
-There's some commented out things that are there mostly for use during development,
-such as using Sub::Name to label things for debugging, but are commented out to eliminate
-its XS dependency on deployed installs.
-
-Some of the Lazy-Loaded modules implicitly need XS things, like Params::Classify, but they're only
-required for user specified parameter validation, and will not be either loaded or needed unless you
-wish to deviate from the defaults. ( And even then you can do this without needing XS, just parameters will not
-be validated ).
-
-But these weirdnesses are largely experimental parts that are likely to be factored out at a later stage
-if we don't need them any more.
-
-=back
-
 =cut
 
 =head1 Recommended Use with Data::Handle
