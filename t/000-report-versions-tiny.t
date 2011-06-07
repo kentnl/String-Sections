@@ -55,10 +55,10 @@ eval { $v .= pmver('English','any version') };
 eval { $v .= pmver('File::Find','any version') };
 eval { $v .= pmver('File::Temp','any version') };
 eval { $v .= pmver('Module::Build','0.3601') };
-eval { $v .= pmver('Package::Stash','any version') };
+eval { $v .= pmver('Moo','any version') };
 eval { $v .= pmver('Params::Classify','any version') };
 eval { $v .= pmver('Scalar::Util','any version') };
-eval { $v .= pmver('Sub::Name','any version') };
+eval { $v .= pmver('Sub::Quote','any version') };
 eval { $v .= pmver('Test::Fatal','any version') };
 eval { $v .= pmver('Test::More','0.96') };
 

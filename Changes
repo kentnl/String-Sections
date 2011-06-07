@@ -1,5 +1,24 @@
 Release history for String-Sections
 
+0.1.1 2011-06-07T16:22:34Z
+ [Dependencies]
+ - No longer uses Package::Stash
+ - Adds Moo and Sub::Quote ( part of Moo )
+ - No longer recommends Sub::Name for develop time.
+
+ [Documentation]
+ - Eliminated Documentation referring to experiemental ideas that are now
+   righly removed.
+
+ [Features]
+ - Implemented load_filehandle
+
+ [Internals]
+ - Refactored Line adding logic to its own private function.
+ - Eliminated all the hand-rolled OO in favour of Moo.
+ - Reworked many internal things to rely on Moo code instead.
+ - Eliminated lots of redundant foolish lazyload code.
+
 0.1.0 2011-04-30T02:11:31Z
  - First version.
 

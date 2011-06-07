@@ -19,7 +19,6 @@ is(
 
 my $sections;
 my $checkstash = {};
-
 is(
   $e = exception {
 
