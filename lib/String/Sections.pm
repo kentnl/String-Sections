@@ -191,7 +191,7 @@ for (
   )
 {
   before $_ =>
-    quote_sub(q| require Scalar::Util; if ( not Scalar::Util::blessed($_[0]) ){ require Carp; Carp::confess("Called method |
+    quote_sub( q| require Scalar::Util; if ( not Scalar::Util::blessed($_[0]) ){ require Carp; Carp::confess("Called method |
       . $_
       . q| as a function, Argument 0 is expected to be a blessed object");} | );
 }
