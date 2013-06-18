@@ -92,7 +92,7 @@
          "File::Temp" : "0.2301",
          "Module::Build" : "0.4005",
          "Moo" : "1.002",
-         "Params::Classify" : "NA(possibly not installed)",
+         "Params::Classify" : "0.013",
          "Pod::Coverage::TrustPod" : "0.100002",
          "Scalar::Util" : "1.27",
          "Sub::Quote" : "NA(undef)",
