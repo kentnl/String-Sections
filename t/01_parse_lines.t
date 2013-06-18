@@ -42,6 +42,6 @@ is(
   "Basic Syntax works"
 ) or diag explain $e;
 
-is_deeply( [ $sections->section_names ], [ 'Foo' ], 'Section names parsed out correctly');
-is_deeply( $checkstash, { Foo => "line\n" }, 'Section data extracted correctly');
+is_deeply( [ $sections->section_names ], ['Foo'], 'Section names parsed out correctly' );
+is_deeply( $checkstash, { Foo => "line\n" }, 'Section data extracted correctly' );
 done_testing();

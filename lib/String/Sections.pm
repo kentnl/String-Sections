@@ -3,7 +3,7 @@ use warnings;
 
 package String::Sections;
 
-# ABSTRACT: Extract labelled groups of sub-strings from a string.
+# ABSTRACT: Extract labeled groups of sub-strings from a string.
 
 =head1 DESCRIPTION
 
@@ -344,7 +344,7 @@ for (
   )
 {
   before $_ =>
-    quote_sub(q| require Scalar::Util; if ( not Scalar::Util::blessed($_[0]) ){ require Carp; Carp::confess("Called method |
+    quote_sub( q| require Scalar::Util; if ( not Scalar::Util::blessed($_[0]) ){ require Carp; Carp::confess("Called method |
       . $_
       . q| as a function, Argument 0 is expected to be a blessed object");} | );
 }

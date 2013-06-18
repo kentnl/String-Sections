@@ -1,6 +1,6 @@
 # NAME
 
-String::Sections - Extract labelled groups of sub-strings from a string.
+String::Sections - Extract labeled groups of sub-strings from a string.
 
 # VERSION
 
