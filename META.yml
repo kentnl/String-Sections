@@ -1,5 +1,5 @@
 ---
-abstract: 'Extract labelled groups of sub-strings from a string.'
+abstract: 'Extract labeled groups of sub-strings from a string.'
 author:
   - 'Kent Fredric <kentnl@cpan.org>'
 build_requires:

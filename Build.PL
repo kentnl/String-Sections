@@ -12,7 +12,7 @@ my %module_build_args = (
   "configure_requires" => {
     "Module::Build" => "0.4005"
   },
-  "dist_abstract" => "Extract labelled groups of sub-strings from a string.",
+  "dist_abstract" => "Extract labeled groups of sub-strings from a string.",
   "dist_author" => [
     "Kent Fredric <kentnl\@cpan.org>"
   ],

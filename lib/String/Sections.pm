@@ -9,7 +9,7 @@ BEGIN {
   $String::Sections::VERSION = '0.1.2';
 }
 
-# ABSTRACT: Extract labelled groups of sub-strings from a string.
+# ABSTRACT: Extract labeled groups of sub-strings from a string.
 
 
 use 5.010001;
@@ -249,7 +249,7 @@ __END__
 
 =head1 NAME
 
-String::Sections - Extract labelled groups of sub-strings from a string.
+String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
