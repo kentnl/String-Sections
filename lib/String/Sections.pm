@@ -166,18 +166,11 @@ sub __add_line {
   return 1;
 }
 
-=method load_list
-
 =method load_list ( @strings )
-
-=method load_list ( \@strings )
 
   my @strings = <$fh>;
 
   my $result = $string_section->load_list( @strings );
-
-  my $result = $string_section->load_list( \@strings );
-
 
 This method handles data as if it had been slopped in unchomped from a filehandle.
 
@@ -229,11 +222,9 @@ sub load_string {
   return _croak('Not Implemented');
 }
 
-=method load_filehandle
-
 =method load_filehandle( $fh )
 
-  $object->load_filehandle( $fh )
+  my $result = $object->load_filehandle( $fh )
 
 =cut
 

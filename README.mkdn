@@ -4,7 +4,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 # VERSION
 
-version 0.2.0
+version 0.2.1
 
 # SYNOPSIS
 
@@ -45,17 +45,11 @@ This module is designed to behave as a work-alike, except on already extracted s
 
     my $object = String::Sections->new( attribute_name => 'value' );
 
-## load\_list
-
 ## load\_list ( @strings )
-
-## load\_list ( \\@strings )
 
     my @strings = <$fh>;
 
     my $result = $string_section->load_list( @strings );
-
-    my $result = $string_section->load_list( \@strings );
 
 This method handles data as if it had been slopped in unchomped from a filehandle.
 
@@ -79,11 +73,9 @@ This behaviour may change in the future, but this is how it is with the least ef
 
 TODO
 
-## load\_filehandle
-
 ## load\_filehandle( $fh )
 
-    $object->load_filehandle( $fh )
+    my $result = $object->load_filehandle( $fh )
 
 {
     "namespace":"String::Sections",
