@@ -51,7 +51,6 @@ This module is designed to behave as a work-alike, except on already extracted s
 
 use 5.010001;
 use Moo;
-use Sub::Quote qw{ quote_sub };
 use String::Sections::Result;
 
 =head1 DEVELOPMENT
@@ -261,44 +260,73 @@ sub load_filehandle {
 # Defines accessors *_regex and _*_regex , that are for public and private access respectively.
 # Defaults to _default_*_regex.
 
-for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
-  has $_ => (
-    is  => 'rw',
-    isa => sub {
-      return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
-      return _croak('Not a Regexp');
-    },
-    builder => '_default_' . $_,
-    lazy    => 1,
-  );
+sub _isa_regexp {
+  return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
+  return _croak('Not a Regexp');
 }
 
 # String | Undef accessors.
 #
 
-for (qw( default_name )) {
 
-  has $_ => (
-    is  => 'rw',
-    isa => sub {
-      if ( defined $_[0] ) { require Params::Classify; Params::Classift::check_string( $_[0] ); }
-    },
-    builder => '_default_' . $_,
-    lazy    => 1,
-  );
+sub _isa_string {
+  if ( defined $_[0] ) {
+    require Params::Classify;
+    Params::Classift::check_string( $_[0] );
+  }
 }
+
+
+sub _isa_boolean {
+  if ( ref $_[0] ) {
+    _croak("$_[0] is not a valid boolean value");
+  }
+}
+
+
+sub _regex_type {
+  my $name = shift;
+  return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
+}
+
+
+sub _string_type {
+  my $name = shift;
+  return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
+}
+
+
+sub _boolean_type {
+  my $name = shift;
+  return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
+}
+
+
+has 'header_regex' => _regex_type('header_regex');
+
+
+has 'empty_line_regex' => _regex_type('empty_line_regex');
+
+
+has 'document_end_regex' => _regex_type('document_end_regex');
+
+
+has 'line_escape_regex' => _regex_type('line_escape_regex');
+
+# String | Undef accessors.
+
+has 'default_name' => _string_type('default_name');
 
 # Boolean Accessors
-for (qw( stop_at_end ignore_empty_prelude enable_escapes )) {
-  has $_ => (
-    is  => 'rw',
-    isa => sub {
-      if ( ref $_[0] ) { _croak("$_[0] is not a valid boolean value"); }
-    },
-    builder => '_default_' . $_,
-    lazy    => 1,
-  );
-}
+
+
+has 'stop_at_end' => _boolean_type('stop_at_end');
+
+
+has 'ignore_empty_prelude' => _boolean_type('ignore_empty_prelude');
+
+
+has 'enable_escapes' => _boolean_type('enable_escapes');
 
 # Default values for various attributes.
 
