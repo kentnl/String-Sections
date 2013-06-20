@@ -77,6 +77,72 @@ TODO
 
     my $result = $object->load_filehandle( $fh )
 
+## header\_regex
+
+## empty\_line\_regex
+
+## document\_end\_regex
+
+## line\_escape\_regex
+
+## stop\_at\_end
+
+## ignore\_empty\_prelude
+
+## enable\_escapes
+
+# ATTRIBUTES
+
+## header\_regex
+
+## empty\_line\_regex
+
+## document\_end\_regex
+
+## line\_escape\_regex
+
+## stop\_at\_end
+
+## ignore\_empty\_prelude
+
+## enable\_escapes
+
+# PRIVATE METHODS
+
+## \_\_add\_line
+
+## \_default\_header\_regex
+
+## \_default\_empty\_line\_regex
+
+## \_default\_document\_end\_regex
+
+## \_default\_line\_escape\_regex
+
+## \_default\_default\_name
+
+## \_default\_stop\_at\_end
+
+## \_default\_ignore\_empty\_prelude
+
+## \_default\_enable\_escapes
+
+# PRIVATE FUNCTIONS
+
+## \_croak
+
+## \_isa\_regexp
+
+## \_isa\_boolean
+
+## \_isa\_boolean
+
+## \_regex\_type
+
+## \_string\_type
+
+## \_boolean\_type
+
 {
     "namespace":"String::Sections",
     "interface":"class",

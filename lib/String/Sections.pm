@@ -131,7 +131,15 @@ And the main class is a factory for L<< C<String::Sections::Result>|String::Sect
 
 =cut
 
+=p_fn _croak
+
+=cut
+
 sub _croak { require Carp; goto &Carp::croak; }
+
+=p_method __add_line
+
+=cut
 
 sub __add_line {
 
@@ -250,15 +258,20 @@ sub load_filehandle {
 #
 # Defines accessors *_regex and _*_regex , that are for public and private access respectively.
 # Defaults to _default_*_regex.
+#
+
+=p_fn _isa_regexp
+
+=cut
 
 sub _isa_regexp {
   return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
   return _croak('Not a Regexp');
 }
 
-# String | Undef accessors.
-#
+=p_fn _isa_boolean
 
+=cut
 
 sub _isa_string {
   if ( defined $_[0] ) {
@@ -267,6 +280,9 @@ sub _isa_string {
   }
 }
 
+=p_fn _isa_boolean
+
+=cut
 
 sub _isa_boolean {
   if ( ref $_[0] ) {
@@ -274,33 +290,62 @@ sub _isa_boolean {
   }
 }
 
+=p_fn _regex_type
+
+=cut
 
 sub _regex_type {
   my $name = shift;
   return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
 }
 
+=p_fn _string_type
+
+=cut
 
 sub _string_type {
   my $name = shift;
   return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
 }
 
+=p_fn _boolean_type
+
+=cut
 
 sub _boolean_type {
   my $name = shift;
   return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
 }
 
+=attr header_regex
+
+=method header_regex
+
+=cut
 
 has 'header_regex' => _regex_type('header_regex');
 
+=attr empty_line_regex
+
+=method empty_line_regex
+
+=cut
 
 has 'empty_line_regex' => _regex_type('empty_line_regex');
 
+=attr document_end_regex
+
+=method document_end_regex
+
+=cut
 
 has 'document_end_regex' => _regex_type('document_end_regex');
 
+=attr line_escape_regex
+
+=method line_escape_regex
+
+=cut
 
 has 'line_escape_regex' => _regex_type('line_escape_regex');
 
@@ -310,16 +355,35 @@ has 'default_name' => _string_type('default_name');
 
 # Boolean Accessors
 
+=attr stop_at_end
+
+=method stop_at_end
+
+=cut
 
 has 'stop_at_end' => _boolean_type('stop_at_end');
 
+=attr ignore_empty_prelude
+
+=method ignore_empty_prelude
+
+=cut
 
 has 'ignore_empty_prelude' => _boolean_type('ignore_empty_prelude');
 
+=attr enable_escapes
+
+=method enable_escapes
+
+=cut
 
 has 'enable_escapes' => _boolean_type('enable_escapes');
 
 # Default values for various attributes.
+
+=p_method _default_header_regex
+
+=cut
 
 sub _default_header_regex {
   return qr{
@@ -334,6 +398,10 @@ sub _default_header_regex {
     }msx;
 }
 
+=p_method _default_empty_line_regex
+
+=cut
+
 sub _default_empty_line_regex {
   return qr{
       ^
@@ -342,12 +410,20 @@ sub _default_empty_line_regex {
   }msx;
 }
 
+=p_method _default_document_end_regex
+
+=cut
+
 sub _default_document_end_regex {
   return qr{
     ^          # Start of line
     __END__    # Document END matcher
   }msx;
 }
+
+=p_method _default_line_escape_regex
+
+=cut
 
 sub _default_line_escape_regex {
   return qr{
@@ -356,11 +432,27 @@ sub _default_line_escape_regex {
   }msx;
 }
 
+=p_method _default_default_name
+
+=cut
+
 sub _default_default_name { return }
+
+=p_method _default_stop_at_end
+
+=cut
 
 sub _default_stop_at_end { return }
 
+=p_method _default_ignore_empty_prelude
+
+=cut
+
 sub _default_ignore_empty_prelude { return 1 }
+
+=p_method _default_enable_escapes
+
+=cut
 
 sub _default_enable_escapes { return }
 
