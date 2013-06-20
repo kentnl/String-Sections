@@ -20,6 +20,7 @@ sub _croak   { require Carp;         goto &Carp::croak; }
 sub _blessed { require Scalar::Util; goto &Scalar::Util::blessed }
 
 
+
 has 'sections' => (
   is      => ro =>,
   lazy    => 1,
@@ -27,6 +28,7 @@ has 'sections' => (
     return {};
   },
 );
+
 
 
 has '_current' => (
@@ -122,6 +124,22 @@ version 0.1.2
 
 =head1 METHODS
 
+=head2 sections
+
+    my $sections = $result->sections;
+    for my $key( keys %{$sections}) {
+        ...
+    }
+
+=head2 set_current
+
+    $result->set_current('foo');
+
+=head2 has_current
+
+    if ( $result->has_current ){
+    }
+
 =head2 section
 
     my $ref = $result->section( $name );
@@ -187,6 +205,10 @@ version 0.1.2
 =head2 _current
 
 =head1 PRIVATE METHODS
+
+=head2 _current
+
+    my $current = $result->_current;
 
 =head2 _compose_section
 
