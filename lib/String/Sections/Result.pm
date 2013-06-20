@@ -46,7 +46,7 @@ has '_current' => (
 sub section { return $_[0]->sections->{ $_[1] } }
 
 
-sub section_names { return ( my @list = sort keys %{ $_[0]->sections } ) } 
+sub section_names { return ( my @list = sort keys %{ $_[0]->sections } ) }
 
 
 sub has_section { return exists $_[0]->sections->{ $_[1] } }
@@ -63,6 +63,7 @@ sub append_data_to_current_section {
   if ( defined $_[1] ) {
     ${ $_[0]->sections->{ $_[0]->_current } } .= ${ $_[1] };
   }
+  return;
 }
 
 
@@ -74,6 +75,7 @@ sub append_data_to_section {
   if ( defined $_[2] ) {
     ${ $_[0]->sections->{ $_[1] } } .= ${ $_[2] };
   }
+  return;
 }
 
 
