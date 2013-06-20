@@ -20,9 +20,7 @@ my %module_build_args = (
   "dist_version" => "0.2.0",
   "license" => "perl",
   "module_name" => "String::Sections",
-  "recommends" => {
-    "Params::Classify" => 0
-  },
+  "recommends" => {},
   "recursive_test_files" => 1,
   "requires" => {
     "Carp" => 0,

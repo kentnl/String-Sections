@@ -24,8 +24,6 @@ provides:
   String::Sections::Result:
     file: lib/String/Sections/Result.pm
     version: v0.2.0
-recommends:
-  Params::Classify: 0
 requires:
   Carp: 0
   Moo: 0
@@ -285,22 +283,6 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Twitter
       name: '@Author::KENTNL/Twitter'
       version: 0.021
-    -
-      class: Dist::Zilla::Plugin::Prereqs
-      config:
-        Dist::Zilla::Plugin::Prereqs:
-          phase: runtime
-          type: requires
-      name: RuntimeRequires
-      version: 4.300035
-    -
-      class: Dist::Zilla::Plugin::Prereqs
-      config:
-        Dist::Zilla::Plugin::Prereqs:
-          phase: runtime
-          type: recommends
-      name: RuntimeRecommends
-      version: 4.300035
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':InstallModules'
