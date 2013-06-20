@@ -46,7 +46,7 @@ has '_current' => (
 sub section { return $_[0]->sections->{ $_[1] } }
 
 
-sub section_names { return my @list = sort keys %{ $_[0]->sections } }
+sub section_names { return ( my @list = sort keys %{ $_[0]->sections } ) } 
 
 
 sub has_section { return exists $_[0]->sections->{ $_[1] } }
