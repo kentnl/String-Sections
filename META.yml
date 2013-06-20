@@ -20,10 +20,10 @@ name: String-Sections
 provides:
   String::Sections:
     file: lib/String/Sections.pm
-    version: v0.1.2
+    version: v0.2.0
   String::Sections::Result:
     file: lib/String/Sections/Result.pm
-    version: v0.1.2
+    version: v0.2.0
 recommends:
   Params::Classify: 0
 requires:
@@ -39,7 +39,7 @@ resources:
   bugtracker: https://github.com/kentfredric/String-Sections/issues
   homepage: https://github.com/kentfredric/String-Sections
   repository: https://github.com/kentfredric/String-Sections.git
-version: 0.1.2
+version: 0.2.0
 x_BuiltWith:
   modules:
     Carp: 1.29

@@ -6,12 +6,11 @@ BEGIN {
   $String::Sections::Result::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::Result::VERSION = '0.1.2';
+  $String::Sections::Result::VERSION = '0.2.0';
 }
 
 # ABSTRACT: Glorified wrapper around a hash representing a parsed String::Sections result
 #
-
 
 
 use Moo;
@@ -124,7 +123,7 @@ String::Sections::Result - Glorified wrapper around a hash representing a parsed
 
 =head1 VERSION
 
-version 0.1.2
+version 0.2.0
 
 =head1 METHODS
 

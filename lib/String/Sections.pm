@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::VERSION = '0.1.2';
+  $String::Sections::VERSION = '0.2.0';
 }
 
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
@@ -203,7 +203,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.1.2
+version 0.2.0
 
 =head1 SYNOPSIS
 
