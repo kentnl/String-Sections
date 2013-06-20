@@ -14,6 +14,7 @@ Release history for String-Sections
  - version 0.9901
 
  [Dependencies::Added / runtime requires]
+ - Params::Classify
  - strict
  - warnings
 
@@ -31,6 +32,9 @@ Release history for String-Sections
 
  [Dependencies::Changed / test requires]
  - Test::More 0.96 → 0.98
+
+ [Dependencies::Removed / runtime recommends]
+ - Params::Classify
 
  [Dependencies::Removed / test requires]
  - English
