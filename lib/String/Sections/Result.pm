@@ -16,6 +16,8 @@ BEGIN {
 
 use Moo;
 
+## no critic (RequireArgUnpacking)
+
 sub _croak   { require Carp;         goto &Carp::croak; }
 sub _blessed { require Scalar::Util; goto &Scalar::Util::blessed }
 
@@ -37,7 +39,7 @@ has '_current' => (
   writer    => 'set_current',
   predicate => 'has_current',
   lazy      => 1,
-  builder   => sub { die 'current never set, but tried to use it' }
+  builder   => sub { return _croak('current never set, but tried to use it') }
 );
 
 
