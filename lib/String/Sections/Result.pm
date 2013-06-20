@@ -39,7 +39,7 @@ has '_current' => (
   writer    => 'set_current',
   predicate => 'has_current',
   lazy      => 1,
-  builder   => sub { return _croak('current never set, but tried to use it') }
+  builder   => sub { return _croak('current never set, but tried to use it') },
 );
 
 
