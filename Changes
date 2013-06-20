@@ -1,6 +1,10 @@
 Release history for String-Sections
 
-0.1.2 2013-06-18T08:01:31Z
+0.1.2 2013-06-20T18:01:46Z
+ [00_NOTEWORTHY Changes]
+ - Interface majorly refactored and split.
+ - Main class is now an instance factory instead of a self-mutator.
+
  [Dependencies::Added / develop requires]
  - Pod::Coverage::TrustPod
  - Test::CPAN::Changes 0.19

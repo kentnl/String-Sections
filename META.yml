@@ -21,11 +21,15 @@ provides:
   String::Sections:
     file: lib/String/Sections.pm
     version: v0.1.2
+  String::Sections::Result:
+    file: lib/String/Sections/Result.pm
+    version: v0.1.2
 recommends:
   Params::Classify: 0
 requires:
   Carp: 0
   Moo: 0
+  Params::Classify: 0
   Scalar::Util: 0
   Sub::Quote: 0
   perl: 5.010001

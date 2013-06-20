@@ -27,6 +27,7 @@ my %module_build_args = (
   "requires" => {
     "Carp" => 0,
     "Moo" => 0,
+    "Params::Classify" => 0,
     "Scalar::Util" => 0,
     "Sub::Quote" => 0,
     "perl" => "5.010001",
