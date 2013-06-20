@@ -340,7 +340,7 @@ Its just somewhat less efficient.
 
 =head3 API
 
-In 0.1.x, api was
+In 0.1.x, C<API> was
 
     my $section = String::Sections->new();
     $section->load_*( $source );
@@ -349,7 +349,7 @@ In 0.1.x, api was
 This was inherently fragile, and allowed weird things to occur when people
 tried to get data from it without it being populated yet.
 
-So starting with 0.2.0, the api is
+So starting with 0.2.0, the C<API> is
 
     my $section = String::Sections->new();
     my $result  = $section->load_*( $source );
