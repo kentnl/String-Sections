@@ -112,7 +112,7 @@ for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
     is  => 'rw',
     isa => sub {
       return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
-      return _croak("Not a Regexp");
+      return _croak('Not a Regexp');
     },
     builder => '_default_' . $_,
     lazy    => 1,

@@ -52,7 +52,7 @@ sub section_names { return ( my @list = sort keys %{ $_[0]->sections } ) }
 sub has_section { return exists $_[0]->sections->{ $_[1] } }
 
 
-sub set_section { $_[0]->sections->{ $_[1] } = $_[2] }
+sub set_section { $_[0]->sections->{ $_[1] } = $_[2]; return; }
 
 
 sub append_data_to_current_section {
