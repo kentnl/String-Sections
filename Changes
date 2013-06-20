@@ -1,6 +1,6 @@
 Release history for String-Sections
 
-0.2.0 2013-06-20T19:56:53Z
+0.2.0 2013-06-20T19:58:41Z
  [00_NOTEWORTHY Changes]
  - Interface majorly refactored and split.
  - Main class is now an instance factory instead of a self-mutator.
@@ -32,6 +32,9 @@ Release history for String-Sections
 
  [Dependencies::Changed / test requires]
  - Test::More 0.96 → 0.98
+
+ [Dependencies::Removed / runtime recommends]
+ - Params::Classify
 
  [Dependencies::Removed / test requires]
  - English
