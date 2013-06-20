@@ -1,6 +1,6 @@
 Release history for String-Sections
 
-0.2.0 2013-06-20T19:54:46Z
+0.2.0 2013-06-20T19:55:02Z
  [00_NOTEWORTHY Changes]
  - Interface majorly refactored and split.
  - Main class is now an instance factory instead of a self-mutator.
