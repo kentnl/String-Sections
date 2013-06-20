@@ -2,7 +2,7 @@ NAME
     String::Sections - Extract labeled groups of sub-strings from a string.
 
 VERSION
-    version 0.2.0
+    version 0.2.1
 
 SYNOPSIS
       use String::Sections;
@@ -39,14 +39,10 @@ METHODS
 
       my $object = String::Sections->new( attribute_name => 'value' );
 
-  load_list
   load_list ( @strings )
-  load_list ( \@strings )
       my @strings = <$fh>;
 
       my $result = $string_section->load_list( @strings );
-
-      my $result = $string_section->load_list( \@strings );
 
     This method handles data as if it had been slopped in unchomped from a
     filehandle.
@@ -72,10 +68,42 @@ METHODS
   load_string
     TODO
 
-  load_filehandle
   load_filehandle( $fh )
-      $object->load_filehandle( $fh )
+      my $result = $object->load_filehandle( $fh )
 
+  header_regex
+  empty_line_regex
+  document_end_regex
+  line_escape_regex
+  stop_at_end
+  ignore_empty_prelude
+  enable_escapes
+ATTRIBUTES
+  header_regex
+  empty_line_regex
+  document_end_regex
+  line_escape_regex
+  stop_at_end
+  ignore_empty_prelude
+  enable_escapes
+PRIVATE METHODS
+  __add_line
+  _default_header_regex
+  _default_empty_line_regex
+  _default_document_end_regex
+  _default_line_escape_regex
+  _default_default_name
+  _default_stop_at_end
+  _default_ignore_empty_prelude
+  _default_enable_escapes
+PRIVATE FUNCTIONS
+  _croak
+  _isa_regexp
+  _isa_boolean
+  _isa_boolean
+  _regex_type
+  _string_type
+  _boolean_type
 DEVELOPMENT
     This code is still new and under development.
 

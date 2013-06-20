@@ -20,16 +20,15 @@ name: String-Sections
 provides:
   String::Sections:
     file: lib/String/Sections.pm
-    version: v0.2.0
+    version: v0.2.1
   String::Sections::Result:
     file: lib/String/Sections/Result.pm
-    version: v0.2.0
+    version: v0.2.1
 requires:
   Carp: 0
   Moo: 0
   Params::Classify: 0
   Scalar::Util: 0
-  Sub::Quote: 0
   perl: 5.010001
   strict: 0
   warnings: 0
@@ -37,7 +36,7 @@ resources:
   bugtracker: https://github.com/kentfredric/String-Sections/issues
   homepage: https://github.com/kentfredric/String-Sections
   repository: https://github.com/kentfredric/String-Sections.git
-version: 0.2.0
+version: 0.2.1
 x_BuiltWith:
   modules:
     Carp: 1.29
@@ -50,7 +49,6 @@ x_BuiltWith:
     Params::Classify: 0.013
     Pod::Coverage::TrustPod: 0.100002
     Scalar::Util: 1.27
-    Sub::Quote: NA(undef)
     Test::CPAN::Changes: 0.20
     Test::CPAN::Meta: 0.23
     Test::Fatal: 0.010
