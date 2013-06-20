@@ -13,6 +13,7 @@ BEGIN {
 #
 
 
+
 use Moo;
 
 sub _croak   { require Carp;         goto &Carp::croak; }
@@ -157,19 +158,19 @@ version 0.1.2
 =head2 shallow_clone
 
     my $clone = $result->shallow_clone;
-    
-    if ( refaddr $clone->section('foo') == refaddr $result->section('foo') ) { 
+
+    if ( refaddr $clone->section('foo') == refaddr $result->section('foo') ) {
         print "clone success!"
     }
 
 =head2 shallow_merge
 
     my $merged = $result->shallow_merge( $other );
-    
-    if ( refaddr $merged->section('foo') == refaddr $result->section('foo') ) { 
+
+    if ( refaddr $merged->section('foo') == refaddr $result->section('foo') ) {
         print "foo copied from orig successfully!"
     }
-    if ( refaddr $merged->section('bar') == refaddr $other->section('bar') ) { 
+    if ( refaddr $merged->section('bar') == refaddr $other->section('bar') ) {
         print "bar copied from other successfully!"
     }
 
@@ -179,11 +180,11 @@ version 0.1.2
 
 =head1 ATTRIBUTES
 
-=head2 sections 
+=head2 sections
 
 =head1 PRIVATE ATTRIBUTES
 
-=head2 _current 
+=head2 _current
 
 =head1 PRIVATE METHODS
 
