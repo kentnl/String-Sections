@@ -181,6 +181,16 @@ version 0.1.2
 
 =head2 sections 
 
+=head1 PRIVATE ATTRIBUTES
+
+=head2 _current 
+
+=head1 PRIVATE METHODS
+
+=head2 _compose_section
+
+    my $str = $result->_compose_section('bar');
+
 =begin MetaPOD::JSON v1.1.0
 
 {
@@ -191,12 +201,6 @@ version 0.1.2
 
 
 =end MetaPOD::JSON
-
-=pattr _current 
-
-=pmethod _compose_section
-
-    my $str = $result->_compose_section('bar');
 
 =head1 AUTHOR
 
