@@ -20,10 +20,21 @@ package String::Sections::Result;
 
 use Moo;
 
+## no critic (RequireArgUnpacking)
+
 sub _croak   { require Carp;         goto &Carp::croak; }
 sub _blessed { require Scalar::Util; goto &Scalar::Util::blessed }
 
-=attr sections 
+=attr sections
+
+=cut
+
+=method sections
+
+    my $sections = $result->sections;
+    for my $key( keys %{$sections}) {
+        ...
+    }
 
 =cut
 
@@ -35,7 +46,22 @@ has 'sections' => (
   },
 );
 
-=pattr _current 
+=p_attr _current
+
+=cut
+
+=method set_current
+
+    $result->set_current('foo');
+
+=method has_current
+
+    if ( $result->has_current ){
+    }
+
+=p_method _current
+
+    my $current = $result->_current;
 
 =cut
 
@@ -45,7 +71,7 @@ has '_current' => (
   writer    => 'set_current',
   predicate => 'has_current',
   lazy      => 1,
-  builder   => sub { die 'current never set, but tried to use it' }
+  builder   => sub { return _croak('current never set, but tried to use it') },
 );
 
 =method section
@@ -63,7 +89,7 @@ sub section { return $_[0]->sections->{ $_[1] } }
 
 =cut
 
-sub section_names { return sort keys %{ $_[0]->sections } }
+sub section_names { return ( my @list = sort keys %{ $_[0]->sections } ) }
 
 =method has_section
 
@@ -81,7 +107,7 @@ sub has_section { return exists $_[0]->sections->{ $_[1] } }
 
 =cut
 
-sub set_section { $_[0]->sections->{ $_[1] } = $_[2] }
+sub set_section { $_[0]->sections->{ $_[1] } = $_[2]; return; }
 
 =method append_data_to_current_section
 
@@ -100,6 +126,7 @@ sub append_data_to_current_section {
   if ( defined $_[1] ) {
     ${ $_[0]->sections->{ $_[0]->_current } } .= ${ $_[1] };
   }
+  return;
 }
 
 =method append_data_to_section
@@ -119,13 +146,14 @@ sub append_data_to_section {
   if ( defined $_[2] ) {
     ${ $_[0]->sections->{ $_[1] } } .= ${ $_[2] };
   }
+  return;
 }
 
 =method shallow_clone
 
     my $clone = $result->shallow_clone;
-    
-    if ( refaddr $clone->section('foo') == refaddr $result->section('foo') ) { 
+
+    if ( refaddr $clone->section('foo') == refaddr $result->section('foo') ) {
         print "clone success!"
     }
 
@@ -143,11 +171,11 @@ sub shallow_clone {
 =method shallow_merge
 
     my $merged = $result->shallow_merge( $other );
-    
-    if ( refaddr $merged->section('foo') == refaddr $result->section('foo') ) { 
+
+    if ( refaddr $merged->section('foo') == refaddr $result->section('foo') ) {
         print "foo copied from orig successfully!"
     }
-    if ( refaddr $merged->section('bar') == refaddr $other->section('bar') ) { 
+    if ( refaddr $merged->section('bar') == refaddr $other->section('bar') ) {
         print "bar copied from other successfully!"
     }
 
@@ -165,7 +193,7 @@ sub shallow_merge {
   return $instance;
 }
 
-=pmethod _compose_section
+=p_method _compose_section
 
     my $str = $result->_compose_section('bar');
 

@@ -103,7 +103,7 @@ Its just somewhat less efficient.
 
 =head3 API
 
-In 0.1.x, api was
+In 0.1.x, C<API> was
 
     my $section = String::Sections->new();
     $section->load_*( $source );
@@ -112,7 +112,7 @@ In 0.1.x, api was
 This was inherently fragile, and allowed weird things to occur when people
 tried to get data from it without it being populated yet.
 
-So starting with 0.2.0, the api is
+So starting with 0.2.0, the C<API> is
 
     my $section = String::Sections->new();
     my $result  = $section->load_*( $source );
@@ -265,9 +265,8 @@ for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
   has $_ => (
     is  => 'rw',
     isa => sub {
-      ( ref $_[0] and ref $_[0] eq 'Regexp' ) or do {
-        die "Not a Regexp";
-        }
+      return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
+      return _croak('Not a Regexp');
     },
     builder => '_default_' . $_,
     lazy    => 1,
