@@ -1,5 +1,62 @@
 Release history for String-Sections
 
+0.2.0 2013-06-20T19:58:41Z
+ [00_NOTEWORTHY Changes]
+ - Interface majorly refactored and split.
+ - Main class is now an instance factory instead of a self-mutator.
+
+ [Dependencies::Added / develop requires]
+ - Pod::Coverage::TrustPod
+ - Test::CPAN::Changes 0.19
+ - Test::CPAN::Meta
+ - Test::Pod 1.41
+ - Test::Pod::Coverage 1.08
+ - version 0.9901
+
+ [Dependencies::Added / runtime requires]
+ - Params::Classify
+ - strict
+ - warnings
+
+ [Dependencies::Changed / build requires]
+ - Module::Build 0.3601 → 0.4005
+
+ [Dependencies::Changed / configure requires]
+ - Module::Build 0.3601 → 0.4005
+
+ [Dependencies::Changed / develop recommends]
+ - Dist::Zilla::PluginBundle::Author::KENTNL::Lite 0.01009803 → v1.3.0
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.0.0 → v1.7.4
+
+ [Dependencies::Changed / test requires]
+ - Test::More 0.96 → 0.98
+
+ [Dependencies::Removed / runtime recommends]
+ - Params::Classify
+
+ [Dependencies::Removed / test requires]
+ - English
+
+ [Documentation]
+ - Update copyright year.
+ - Update LICENSE address
+ - Added README.mkdn to project
+
+ [Internals]
+ - Add $AUTHORITY var in all packages
+ - Move $VERSION var out of BEGIN {}
+
+ [Meta]
+ - adds x_authority key
+ - bug tracker to github issues
+ - git URIs moved to https:// protocols
+
+ [Packaging]
+ - utilises Module::Build 0.4004 test_requires
+ - author/release tests no longer in t/
+
 0.1.1 2011-06-07T16:22:34Z
  [Dependencies]
  - No longer uses Package::Stash

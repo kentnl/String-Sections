@@ -3,27 +3,34 @@ use warnings;
 
 package String::Sections;
 BEGIN {
-  $String::Sections::VERSION = '0.1.1'; # TRIAL
+  $String::Sections::AUTHORITY = 'cpan:KENTNL';
+}
+{
+  $String::Sections::VERSION = '0.2.0';
 }
 
-# ABSTRACT: Extract labelled groups of sub-strings from a string.
+# ABSTRACT: Extract labeled groups of sub-strings from a string.
+
 
 
 use 5.010001;
 use Moo;
 use Sub::Quote qw{ quote_sub };
+use String::Sections::Result;
 
 
 
+
+
+sub _croak { require Carp; goto &Carp::croak; }
 
 sub __add_line {
 
-  my ( $self, $stash, $line, $current ) = @_;
+  my ( $self, $stash, $line ) = @_;
 
   if ( ${$line} =~ $self->header_regex ) {
-    my $blank = q{};
-    ${$current} = $1;
-    $stash->{ ${$current} } = \$blank;
+    $stash->set_current("$1");
+    $stash->append_data_to_current_section();
     return 1;    # 1 is next.
   }
 
@@ -33,16 +40,11 @@ sub __add_line {
   }
 
   if ( $self->ignore_empty_prelude ) {
-    return 1 if not defined ${$current} and ${$line} =~ $self->empty_line_regex;
+    return 1 if not $stash->has_current and ${$line} =~ $self->empty_line_regex;
   }
 
-  if ( not defined ${$current} ) {
-    require Carp;
-    Carp::confess(
-      'bogus data section: text outside named section. line: ' . ${$line}
-
-        #. ' self: ' . dump $self
-    );
+  if ( not $stash->has_current ) {
+    _croak( 'bogus data section: text outside named section. line: ' . ${$line} );
   }
 
   if ( $self->enable_escapes ) {
@@ -50,7 +52,7 @@ sub __add_line {
     ${$line} =~ s{$regex}{}msx;
   }
 
-  ${ $stash->{ ${$current} } } .= ${$line};
+  $stash->append_data_to_current_section($line);
 
   return 1;
 }
@@ -58,87 +60,48 @@ sub __add_line {
 
 sub load_list {
   my ( $self, @rest ) = @_;
-  @rest = @{ $rest[0] } if ref $rest[0] and ref $rest[0] eq 'ARRAY';
-  my %stash;
-  my $current;
+
+  my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
-    my $blank = q{};
-    $current = $self->default_name;
-    $stash{ $self->default_name } = \$blank;
+    $result_ob->set_current( $self->default_name );
+    $result_ob->add_data_to_current_section();
   }
 
   for my $line (@rest) {
-    my $result = __add_line( $self, \%stash, \$line, \$current );
+    my $result = $self->__add_line( $result_ob, \$line );
     next if $result;
     last if not $result;
 
   }
-  $self->_sections( \%stash );
-  return 1;
+  return $result_ob;
 }
 
 
 sub load_string {
   my ( $self, $string ) = @_;
-  require Carp;
-  return Carp::confess('Not Implemented');
+  return _croak('Not Implemented');
 }
 
 
 sub load_filehandle {
   my ( $self, $fh ) = @_;
-  my %stash;
-  my $current;
+
+  my $result_ob = String::Sections::Result->new();
 
   if ( $self->_default_name ) {
-    my $blank = q{};
-    $current = $self->_default_name;
-    $stash{ $self->_default_name } = \$blank;
+    $result_ob->set_current( $self->_default_name );
+    $result_ob->append_data_to_current_section();
   }
   while ( defined( my $line = <$fh> ) ) {
-    my $result = __add_line( $self, \%stash, \$line, \$current );
+    my $result = $self->__add_line( $result_ob, \$line, );
     next if $result;
     last if not $result;
   }
 
-  $self->_sections( \%stash );
-  return 1;
+  return $result_ob;
 
 }
-
-
-sub merge {
-  my ( $self, $other ) = @_;
-  require Carp;
-  return Carp::confess('Not Implemented');
-}
-
-
-sub section_names {
-  my ($self) = @_;
-  return keys %{ $self->_sections };
-}
-
-
-sub has_section {
-  my ( $self, $section ) = @_;
-  return exists $self->_sections->{$section};
-}
-
-
-sub section {
-  my ( $self, $section ) = @_;
-  return $self->_sections->{$section};
-}
-
-## no critic( RequireInterpolationOfMetachars )
-has '_sections' => (
-  is      => 'rw',
-  isa     => quote_sub(q{ if ( ref $_[0] ne 'HASH' ){ require Carp; Carp::confess('_sections must be a hash'); } }),
-  lazy    => 1,
-  default => quote_sub(q{ require Carp; Carp::confess('tried to get data from sections without first populating with data');}),
-);
 
 #
 # Defines accessors *_regex and _*_regex , that are for public and private access respectively.
@@ -146,8 +109,11 @@ has '_sections' => (
 
 for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
   has $_ => (
-    is      => 'rw',
-    isa     => quote_sub(q| require Params::Classify; Params::Classify::check_regexp( $_[0] ) |),
+    is  => 'rw',
+    isa => sub {
+      return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
+      return _croak('Not a Regexp');
+    },
     builder => '_default_' . $_,
     lazy    => 1,
   );
@@ -159,8 +125,10 @@ for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
 for (qw( default_name )) {
 
   has $_ => (
-    is      => 'rw',
-    isa     => quote_sub(q| if( defined  $_[0] ){  require Params::Classify; Params::Classift::check_string( $_[0] ); } |),
+    is  => 'rw',
+    isa => sub {
+      if ( defined $_[0] ) { require Params::Classify; Params::Classift::check_string( $_[0] ); }
+    },
     builder => '_default_' . $_,
     lazy    => 1,
   );
@@ -169,28 +137,13 @@ for (qw( default_name )) {
 # Boolean Accessors
 for (qw( stop_at_end ignore_empty_prelude enable_escapes )) {
   has $_ => (
-    is      => 'rw',
-    isa     => quote_sub(q|  if( ref $_[0] ){ require Carp; Carp::confess("$_[0] is not a valid boolean value"); }  |),
+    is  => 'rw',
+    isa => sub {
+      if ( ref $_[0] ) { _croak("$_[0] is not a valid boolean value"); }
+    },
     builder => '_default_' . $_,
     lazy    => 1,
   );
-}
-
-# Go through all these methods and curry them to do method checks.
-
-for (
-  qw(
-  load_list load_string load_filehandle merge section_names has_section section _sections
-  stop_at_end ignore_empty_prelude enable_escapes
-  default_name
-  header_regex empty_line_regex document_end_regex line_escape_regex
-  )
-  )
-{
-  before $_ =>
-    quote_sub(q| require Scalar::Util; if ( not Scalar::Util::blessed($_[0]) ){ require Carp; Carp::confess("Called method |
-      . $_
-      . q| as a function, Argument 0 is expected to be a blessed object");} | );
 }
 
 # Default values for various attributes.
@@ -241,31 +194,32 @@ sub _default_enable_escapes { return }
 1;
 
 __END__
+
 =pod
 
 =head1 NAME
 
-String::Sections - Extract labelled groups of sub-strings from a string.
+String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.1.1
+version 0.2.0
 
 =head1 SYNOPSIS
 
   use String::Sections;
 
   my $sections = String::Sections->new();
-  $sections->load_list( @lines );
+  my $result = $sections->load_list( @lines );
   # TODO
   # $sections->load_string( $string );
   # $sections->load_filehandle( $fh );
   #
   # $sections->merge( $other_sections_object );
 
-  my @section_names = $sections->section_names();
-  if ( $sections->has_section( 'section_label' ) ) {
-    my $string_ref = $sections->section( 'section_label' );
+  my @section_names = $result->section_names();
+  if ( $result->has_section( 'section_label' ) ) {
+    my $string_ref = $result->section( 'section_label' );
     ...
   }
 
@@ -298,22 +252,22 @@ This module is designed to behave as a work-alike, except on already extracted s
 
   my @strings = <$fh>;
 
-  $object->load_list( @strings );
+  my $result = $string_section->load_list( @strings );
 
-  $object->load_list( \@strings );
+  my $result = $string_section->load_list( \@strings );
 
 This method handles data as if it had been slopped in unchomped from a filehandle.
 
 Ideally, each entry in @strings will be terminated with $/ , as the collated data from each section
 is concatenated into a large singular string, e.g.:
 
-  $object->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
-  $object->section('Foo')
+  $result = $string_section->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
+  $section_foo = $result->section('Foo')
   # bar
   # baz
 
-  $object->load_list("__[ Foo ]__\n", "bar", "baz" );
-  $object->section('Foo');
+  $result = $s_s->load_list("__[ Foo ]__\n", "bar", "baz" );
+  $result->section('Foo');
   # barbaz
 
   $object->load_list("__[ Foo ]__", "bar", "baz" ) # will not work by default.
@@ -330,35 +284,16 @@ TODO
 
   $object->load_filehandle( $fh )
 
-=head2 merge
+=begin MetaPOD::JSON v1.1.0
 
-TODO
+{
+    "namespace":"String::Sections",
+    "interface":"class",
+    "inherits":"Moo::Object"
+}
 
-=head2 section_names
 
-  my @names = $object->section_names;
-
-Returns a list of the sections that have been extracted so far.
-
-=head2 has_section
-
-=head2 has_section( $name )
-
-  if( $object->has_section('Foo') ){
-    # code
-  }
-
-Determines if the given section name has been extracted.
-
-=head2 section
-
-=head2 section( $name )
-
-  my $str = $object->section('Foo');
-
-  print ${ $str };
-
-This returns a B<REFERENCE> to a String that was parsed from section "Foo".
+=end MetaPOD::JSON
 
 =head1 DEVELOPMENT
 
@@ -386,7 +321,7 @@ In future, I plan on this being the syntax for connecting Data::Handle with this
 
   my $dh = Data::Handle->new( __PACKAGE__ );
   my $ss = String::Sections->new( stop_at_end => 1 );
-  $ss->load_filehandle( $dh );
+  my $result = $ss->load_filehandle( $dh );
 
 This doesn't implicitly perform any of the inheritance tree magic Data::Section does,
 but its also planned on making that easy to do when you want it with C<< ->merge( $section ) >>
@@ -395,9 +330,32 @@ For now, the recommended code is not so different:
 
   my $dh = Data::Handle->new( __PACKAGE__ );
   my $ss = String::Sections->new( stop_at_end => 1 );
-  $ss->load_list( <$dh> );
+  my $result  = $ss->load_list( <$dh> );
 
 Its just somewhat less efficient.
+
+=head1 SIGNIFICANT CHANGES
+
+=head2 Since 0.1.x
+
+=head3 API
+
+In 0.1.x, C<API> was
+
+    my $section = String::Sections->new();
+    $section->load_*( $source );
+    $section->section_names
+
+This was inherently fragile, and allowed weird things to occur when people
+tried to get data from it without it being populated yet.
+
+So starting with 0.2.0, the C<API> is
+
+    my $section = String::Sections->new();
+    my $result  = $section->load_*( $source );
+    $result->section_names;
+
+And the main class is a factory for L<< C<String::Sections::Result>|String::Sections::Result >> objects.
 
 =head1 AUTHOR
 
@@ -405,10 +363,9 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

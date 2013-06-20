@@ -1,23 +1,23 @@
 NAME
-    String::Sections - Extract labelled groups of sub-strings from a string.
+    String::Sections - Extract labeled groups of sub-strings from a string.
 
 VERSION
-    version 0.1.1
+    version 0.2.0
 
 SYNOPSIS
       use String::Sections;
 
       my $sections = String::Sections->new();
-      $sections->load_list( @lines );
+      my $result = $sections->load_list( @lines );
       # TODO
       # $sections->load_string( $string );
       # $sections->load_filehandle( $fh );
       #
       # $sections->merge( $other_sections_object );
 
-      my @section_names = $sections->section_names();
-      if ( $sections->has_section( 'section_label' ) ) {
-        my $string_ref = $sections->section( 'section_label' );
+      my @section_names = $result->section_names();
+      if ( $result->has_section( 'section_label' ) ) {
+        my $string_ref = $result->section( 'section_label' );
         ...
       }
 
@@ -44,9 +44,9 @@ METHODS
   load_list ( \@strings )
       my @strings = <$fh>;
 
-      $object->load_list( @strings );
+      my $result = $string_section->load_list( @strings );
 
-      $object->load_list( \@strings );
+      my $result = $string_section->load_list( \@strings );
 
     This method handles data as if it had been slopped in unchomped from a
     filehandle.
@@ -55,13 +55,13 @@ METHODS
     collated data from each section is concatenated into a large singular
     string, e.g.:
 
-      $object->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
-      $object->section('Foo')
+      $result = $string_section->load_list("__[ Foo ]__\n", "bar\n", "baz\n" );
+      $section_foo = $result->section('Foo')
       # bar
       # baz
 
-      $object->load_list("__[ Foo ]__\n", "bar", "baz" );
-      $object->section('Foo');
+      $result = $s_s->load_list("__[ Foo ]__\n", "bar", "baz" );
+      $result->section('Foo');
       # barbaz
 
       $object->load_list("__[ Foo ]__", "bar", "baz" ) # will not work by default.
@@ -75,30 +75,6 @@ METHODS
   load_filehandle
   load_filehandle( $fh )
       $object->load_filehandle( $fh )
-
-  merge
-    TODO
-
-  section_names
-      my @names = $object->section_names;
-
-    Returns a list of the sections that have been extracted so far.
-
-  has_section
-  has_section( $name )
-      if( $object->has_section('Foo') ){
-        # code
-      }
-
-    Determines if the given section name has been extracted.
-
-  section
-  section( $name )
-      my $str = $object->section('Foo');
-
-      print ${ $str };
-
-    This returns a REFERENCE to a String that was parsed from section "Foo".
 
 DEVELOPMENT
     This code is still new and under development.
@@ -124,7 +100,7 @@ Recommended Use with Data::Handle
 
       my $dh = Data::Handle->new( __PACKAGE__ );
       my $ss = String::Sections->new( stop_at_end => 1 );
-      $ss->load_filehandle( $dh );
+      my $result = $ss->load_filehandle( $dh );
 
     This doesn't implicitly perform any of the inheritance tree magic
     Data::Section does, but its also planned on making that easy to do when
@@ -134,15 +110,35 @@ Recommended Use with Data::Handle
 
       my $dh = Data::Handle->new( __PACKAGE__ );
       my $ss = String::Sections->new( stop_at_end => 1 );
-      $ss->load_list( <$dh> );
+      my $result  = $ss->load_list( <$dh> );
 
     Its just somewhat less efficient.
+
+SIGNIFICANT CHANGES
+  Since 0.1.x
+   API
+    In 0.1.x, "API" was
+
+        my $section = String::Sections->new();
+        $section->load_*( $source );
+        $section->section_names
+
+    This was inherently fragile, and allowed weird things to occur when
+    people tried to get data from it without it being populated yet.
+
+    So starting with 0.2.0, the "API" is
+
+        my $section = String::Sections->new();
+        my $result  = $section->load_*( $source );
+        $result->section_names;
+
+    And the main class is a factory for "String::Sections::Result" objects.
 
 AUTHOR
     Kent Fredric <kentnl@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2011 by Kent Fredric <kentnl@cpan.org>.
+    This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
