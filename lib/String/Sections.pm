@@ -20,7 +20,6 @@ use String::Sections::Result;
 
 
 
-# no critic (RequireArgUnpacking)
 
 
 
@@ -111,6 +110,8 @@ sub load_filehandle {
 # Defaults to _default_*_regex.
 #
 
+
+# no critic (RequireArgUnpacking)
 
 sub _isa_regexp {
   return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
