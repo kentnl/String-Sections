@@ -121,6 +121,7 @@ And the main class is a factory for L<< C<String::Sections::Result>|String::Sect
 
 =cut
 
+
 =method new
 
 =method new( %args )
@@ -264,6 +265,7 @@ sub load_filehandle {
 
 =cut
 
+## no critic (RequireArgUnpacking)
 sub _isa_regexp {
   return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
   return _croak('Not a Regexp');
@@ -278,6 +280,7 @@ sub _isa_string {
     require Params::Classify;
     Params::Classift::check_string( $_[0] );
   }
+  return;
 }
 
 =p_fn _isa_boolean
@@ -288,6 +291,7 @@ sub _isa_boolean {
   if ( ref $_[0] ) {
     _croak("$_[0] is not a valid boolean value");
   }
+  return;
 }
 
 =p_fn _regex_type
