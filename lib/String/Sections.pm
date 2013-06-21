@@ -123,6 +123,7 @@ sub _isa_string {
     require Params::Classify;
     Params::Classift::check_string( $_[0] );
   }
+  return;
 }
 
 
@@ -130,6 +131,7 @@ sub _isa_boolean {
   if ( ref $_[0] ) {
     _croak("$_[0] is not a valid boolean value");
   }
+  return;
 }
 
 
