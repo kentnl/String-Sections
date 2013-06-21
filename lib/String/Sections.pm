@@ -20,6 +20,8 @@ use String::Sections::Result;
 
 
 
+# no critic (RequireArgUnpacking)
+
 
 
 sub _croak { require Carp; goto &Carp::croak; }
