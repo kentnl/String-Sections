@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::VERSION = '0.2.0';
+  $String::Sections::VERSION = '0.2.1';
 }
 
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
@@ -15,14 +15,16 @@ BEGIN {
 
 use 5.010001;
 use Moo;
-use Sub::Quote qw{ quote_sub };
 use String::Sections::Result;
 
 
 
 
 
+
+
 sub _croak { require Carp; goto &Carp::croak; }
+
 
 sub __add_line {
 
@@ -106,47 +108,79 @@ sub load_filehandle {
 #
 # Defines accessors *_regex and _*_regex , that are for public and private access respectively.
 # Defaults to _default_*_regex.
-
-for (qw( header_regex empty_line_regex document_end_regex line_escape_regex )) {
-  has $_ => (
-    is  => 'rw',
-    isa => sub {
-      return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
-      return _croak('Not a Regexp');
-    },
-    builder => '_default_' . $_,
-    lazy    => 1,
-  );
-}
-
-# String | Undef accessors.
 #
 
-for (qw( default_name )) {
 
-  has $_ => (
-    is  => 'rw',
-    isa => sub {
-      if ( defined $_[0] ) { require Params::Classify; Params::Classift::check_string( $_[0] ); }
-    },
-    builder => '_default_' . $_,
-    lazy    => 1,
-  );
+## no critic (RequireArgUnpacking)
+sub _isa_regexp {
+  return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
+  return _croak('Not a Regexp');
 }
+
+
+sub _isa_string {
+  if ( defined $_[0] ) {
+    require Params::Classify;
+    Params::Classift::check_string( $_[0] );
+  }
+  return;
+}
+
+
+sub _isa_boolean {
+  if ( ref $_[0] ) {
+    _croak("$_[0] is not a valid boolean value");
+  }
+  return;
+}
+
+
+sub _regex_type {
+  my $name = shift;
+  return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
+}
+
+
+sub _string_type {
+  my $name = shift;
+  return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
+}
+
+
+sub _boolean_type {
+  my $name = shift;
+  return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
+}
+
+
+has 'header_regex' => _regex_type('header_regex');
+
+
+has 'empty_line_regex' => _regex_type('empty_line_regex');
+
+
+has 'document_end_regex' => _regex_type('document_end_regex');
+
+
+has 'line_escape_regex' => _regex_type('line_escape_regex');
+
+# String | Undef accessors.
+
+has 'default_name' => _string_type('default_name');
 
 # Boolean Accessors
-for (qw( stop_at_end ignore_empty_prelude enable_escapes )) {
-  has $_ => (
-    is  => 'rw',
-    isa => sub {
-      if ( ref $_[0] ) { _croak("$_[0] is not a valid boolean value"); }
-    },
-    builder => '_default_' . $_,
-    lazy    => 1,
-  );
-}
+
+
+has 'stop_at_end' => _boolean_type('stop_at_end');
+
+
+has 'ignore_empty_prelude' => _boolean_type('ignore_empty_prelude');
+
+
+has 'enable_escapes' => _boolean_type('enable_escapes');
 
 # Default values for various attributes.
+
 
 sub _default_header_regex {
   return qr{
@@ -161,6 +195,7 @@ sub _default_header_regex {
     }msx;
 }
 
+
 sub _default_empty_line_regex {
   return qr{
       ^
@@ -169,12 +204,14 @@ sub _default_empty_line_regex {
   }msx;
 }
 
+
 sub _default_document_end_regex {
   return qr{
     ^          # Start of line
     __END__    # Document END matcher
   }msx;
 }
+
 
 sub _default_line_escape_regex {
   return qr{
@@ -183,11 +220,15 @@ sub _default_line_escape_regex {
   }msx;
 }
 
+
 sub _default_default_name { return }
+
 
 sub _default_stop_at_end { return }
 
+
 sub _default_ignore_empty_prelude { return 1 }
+
 
 sub _default_enable_escapes { return }
 
@@ -203,7 +244,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.2.0
+version 0.2.1
 
 =head1 SYNOPSIS
 
@@ -244,17 +285,11 @@ This module is designed to behave as a work-alike, except on already extracted s
 
   my $object = String::Sections->new( attribute_name => 'value' );
 
-=head2 load_list
-
 =head2 load_list ( @strings )
-
-=head2 load_list ( \@strings )
 
   my @strings = <$fh>;
 
   my $result = $string_section->load_list( @strings );
-
-  my $result = $string_section->load_list( \@strings );
 
 This method handles data as if it had been slopped in unchomped from a filehandle.
 
@@ -278,11 +313,75 @@ This behaviour may change in the future, but this is how it is with the least ef
 
 TODO
 
-=head2 load_filehandle
-
 =head2 load_filehandle( $fh )
 
-  $object->load_filehandle( $fh )
+  my $result = $object->load_filehandle( $fh )
+
+=head2 header_regex
+
+=head2 empty_line_regex
+
+=head2 document_end_regex
+
+=head2 line_escape_regex
+
+=head2 stop_at_end
+
+=head2 ignore_empty_prelude
+
+=head2 enable_escapes
+
+=head1 ATTRIBUTES
+
+=head2 header_regex
+
+=head2 empty_line_regex
+
+=head2 document_end_regex
+
+=head2 line_escape_regex
+
+=head2 stop_at_end
+
+=head2 ignore_empty_prelude
+
+=head2 enable_escapes
+
+=head1 PRIVATE METHODS
+
+=head2 __add_line
+
+=head2 _default_header_regex
+
+=head2 _default_empty_line_regex
+
+=head2 _default_document_end_regex
+
+=head2 _default_line_escape_regex
+
+=head2 _default_default_name
+
+=head2 _default_stop_at_end
+
+=head2 _default_ignore_empty_prelude
+
+=head2 _default_enable_escapes
+
+=head1 PRIVATE FUNCTIONS
+
+=head2 _croak
+
+=head2 _isa_regexp
+
+=head2 _isa_boolean
+
+=head2 _isa_boolean
+
+=head2 _regex_type
+
+=head2 _string_type
+
+=head2 _boolean_type
 
 =begin MetaPOD::JSON v1.1.0
 

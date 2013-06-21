@@ -1,5 +1,12 @@
 Release history for String-Sections
 
+0.2.1 2013-06-21T12:10:27Z
+ [Dependencies::Removed / runtime requires]
+ - Sub::Quote
+
+ [Documentation]
+ - Misc Documentation enhancement
+
 0.2.0 2013-06-20T19:58:41Z
  [00_NOTEWORTHY Changes]
  - Interface majorly refactored and split.

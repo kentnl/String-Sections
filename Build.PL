@@ -17,7 +17,7 @@ my %module_build_args = (
     "Kent Fredric <kentnl\@cpan.org>"
   ],
   "dist_name" => "String-Sections",
-  "dist_version" => "0.2.0",
+  "dist_version" => "0.2.1",
   "license" => "perl",
   "module_name" => "String::Sections",
   "recommends" => {},
@@ -27,7 +27,6 @@ my %module_build_args = (
     "Moo" => 0,
     "Params::Classify" => 0,
     "Scalar::Util" => 0,
-    "Sub::Quote" => 0,
     "perl" => "5.010001",
     "strict" => 0,
     "warnings" => 0
