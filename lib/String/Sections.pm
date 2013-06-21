@@ -111,8 +111,7 @@ sub load_filehandle {
 #
 
 
-# no critic (RequireArgUnpacking)
-
+## no critic (RequireArgUnpacking)
 sub _isa_regexp {
   return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
   return _croak('Not a Regexp');
