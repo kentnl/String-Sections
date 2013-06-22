@@ -121,7 +121,6 @@ And the main class is a factory for L<< C<String::Sections::Result>|String::Sect
 
 =cut
 
-
 =method new
 
 =method new( %args )
