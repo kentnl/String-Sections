@@ -182,7 +182,7 @@ sub shallow_clone {
 =cut
 
 sub shallow_merge {
-  my $class = blessed( $_[0] ) || $_[0];
+  my $class = _blessed( $_[0] ) || $_[0];
   my $instance = $class->new();
   for my $name ( keys %{ $_[0]->sections } ) {
     $instance->sections->{$name} = $_[0]->sections->{$name};
