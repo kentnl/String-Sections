@@ -64,11 +64,11 @@
    "provides" : {
       "String::Sections" : {
          "file" : "lib/String/Sections.pm",
-         "version" : "v0.2.1"
+         "version" : "v0.2.2"
       },
       "String::Sections::Result" : {
          "file" : "lib/String/Sections/Result.pm",
-         "version" : "v0.2.1"
+         "version" : "v0.2.2"
       }
    },
    "release_status" : "stable",
@@ -83,7 +83,7 @@
          "web" : "https://github.com/kentfredric/String-Sections"
       }
    },
-   "version" : "0.2.1",
+   "version" : "0.2.2",
    "x_BuiltWith" : {
       "modules" : {
          "Carp" : "1.29",
