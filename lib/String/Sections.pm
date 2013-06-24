@@ -207,7 +207,7 @@ sub load_list {
 
   if ( $self->default_name ) {
     $result_ob->set_current( $self->default_name );
-    $result_ob->add_data_to_current_section();
+    $result_ob->append_data_to_current_section();
   }
 
   for my $line (@rest) {
@@ -241,8 +241,8 @@ sub load_filehandle {
 
   my $result_ob = String::Sections::Result->new();
 
-  if ( $self->_default_name ) {
-    $result_ob->set_current( $self->_default_name );
+  if ( $self->default_name ) {
+    $result_ob->set_current( $self->default_name );
     $result_ob->append_data_to_current_section();
   }
   while ( defined( my $line = <$fh> ) ) {
@@ -277,7 +277,7 @@ sub _isa_regexp {
 sub _isa_string {
   if ( defined $_[0] ) {
     require Params::Classify;
-    Params::Classift::check_string( $_[0] );
+    Params::Classify::check_string( $_[0] );
   }
   return;
 }
@@ -352,7 +352,11 @@ has 'document_end_regex' => _regex_type('document_end_regex');
 
 has 'line_escape_regex' => _regex_type('line_escape_regex');
 
-# String | Undef accessors.
+=attr default_name
+
+=method default_name
+
+=cut
 
 has 'default_name' => _string_type('default_name');
 
