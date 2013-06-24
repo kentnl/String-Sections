@@ -7,15 +7,16 @@ use Test::Fatal qw( exception );
 use Sub::Exporter::Progressive -setup => {
   exports => [qw( nofatals fatals and_fatal_is )],
   groups  => {
-    default => [qw( nofatals fatals and_fatal_is )],
+    default => [qw( nofatals fatals )],
   },
 };
 
 our $REPORT_PASS;
 
-sub nofatals($$;$) {
-  my ( $reason, $code, $callback ) = @_;
+sub nofatals($$;@) {
+  my ( $reason, $code, %extra ) = @_;
   my $result = exception { $code->() };
+  my $callback = $extra{and_fatal_is};
   if ($result) {
     fail("$reason raised no exception");
     diag($result);
@@ -29,9 +30,10 @@ sub nofatals($$;$) {
   }
 }
 
-sub fatals($$;$) {
-  my ( $reason, $code, $callback ) = @_;
+sub fatals($$;@) {
+  my ( $reason, $code, %extra ) = @_;
   my $result = exception { $code->() };
+  my $callback = $extra{and_fatal_is};
   if ( not $result ) {
     fail("$reason should raise exception");
   }
@@ -46,6 +48,6 @@ sub fatals($$;$) {
 
 sub and_fatal_is(&) {
   my ($code) = @_;
-  return $code;
+  return ( and_fatal_is => $code );
 }
 1;
