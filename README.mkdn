@@ -4,7 +4,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 # VERSION
 
-version 0.2.1
+version 0.2.2
 
 # SYNOPSIS
 
@@ -85,6 +85,8 @@ TODO
 
 ## line\_escape\_regex
 
+## default\_name
+
 ## stop\_at\_end
 
 ## ignore\_empty\_prelude
@@ -100,6 +102,8 @@ TODO
 ## document\_end\_regex
 
 ## line\_escape\_regex
+
+## default\_name
 
 ## stop\_at\_end
 
