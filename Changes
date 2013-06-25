@@ -1,6 +1,6 @@
 Release history for String-Sections
 
-0.2.2 2013-06-25T04:10:58Z
+0.2.2 2013-06-25T04:12:32Z
  [Bug Fixes]
  - load_filehandle used ->_default name instead of ->default_name
  - _isa_string tried to call ::Classif<t> instead of ::Classif<y>
