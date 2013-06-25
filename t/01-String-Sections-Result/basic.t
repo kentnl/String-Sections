@@ -2,37 +2,13 @@ use strict;
 use warnings;
 use Test::More;
 
-#use Path::Tiny;
-#use FindBin;
-#use lib path($FindBin::Bin)->child('lib')->stringify;
-use Test::Fatal qw( exception );
+use Path::Tiny;
+use FindBin;
+use lib path($FindBin::Bin)->parent->child('lib')->stringify;
+
+use Test::Fatal::Assert;
+
 use Scalar::Util qw( refaddr );
-
-our $REPORT_PASS;
-
-sub nofatals {
-  my ( $reason, $code ) = @_;
-  my $result = exception { $code->() };
-  if ($result) {
-    fail("$reason raised no exception");
-    diag($result);
-  }
-  else {
-    $REPORT_PASS and pass("$reason raised no exception");
-  }
-}
-
-sub fatals {
-  my ( $reason, $code ) = @_;
-  my $result = exception { $code->() };
-  if ( not $result ) {
-    fail("$reason should raise exception");
-  }
-  else {
-    $REPORT_PASS and pass("$reason should raise exception");
-  }
-
-}
 
 nofatals "require String::Sections::Result" => sub {
   require String::Sections::Result;
@@ -51,12 +27,22 @@ nofatals "sections()" => sub {
 nofatals "has_current()" => sub {
   ok( !$instance->has_current, 'has_current() == false' );
 };
-fatals "_current()" => sub {
-  my $result = $instance->_current;
-};
-fatals "_current() x2" => sub {
-  my $result = $instance->_current;
-};
+fatals(
+  "_current()" => sub {
+    my $result = $instance->_current;
+  },
+  and_fatal_is => sub {
+    like( $_, qr/current never set, but tried to use it/, "execption mentions current" );
+  }
+);
+fatals(
+  "_current() x2" => sub {
+    my $result = $instance->_current;
+  },
+  and_fatal_is => sub {
+    like( $_, qr/current never set, but tried to use it/, "exception mentions current" );
+  }
+);
 nofatals "section(q{DOES NOT EXIST})" => sub {
   is( $instance->section('DOES NOT EXIST'), undef, 'section(q{DOES NOT EXIST}) == undef' );
 };

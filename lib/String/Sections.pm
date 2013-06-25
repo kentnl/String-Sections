@@ -66,7 +66,7 @@ sub load_list {
 
   if ( $self->default_name ) {
     $result_ob->set_current( $self->default_name );
-    $result_ob->add_data_to_current_section();
+    $result_ob->append_data_to_current_section();
   }
 
   for my $line (@rest) {
@@ -90,8 +90,8 @@ sub load_filehandle {
 
   my $result_ob = String::Sections::Result->new();
 
-  if ( $self->_default_name ) {
-    $result_ob->set_current( $self->_default_name );
+  if ( $self->default_name ) {
+    $result_ob->set_current( $self->default_name );
     $result_ob->append_data_to_current_section();
   }
   while ( defined( my $line = <$fh> ) ) {
@@ -120,7 +120,7 @@ sub _isa_regexp {
 sub _isa_string {
   if ( defined $_[0] ) {
     require Params::Classify;
-    Params::Classift::check_string( $_[0] );
+    Params::Classify::check_string( $_[0] );
   }
   return;
 }
@@ -163,7 +163,6 @@ has 'document_end_regex' => _regex_type('document_end_regex');
 
 has 'line_escape_regex' => _regex_type('line_escape_regex');
 
-# String | Undef accessors.
 
 has 'default_name' => _string_type('default_name');
 
@@ -324,6 +323,8 @@ TODO
 
 =head2 line_escape_regex
 
+=head2 default_name
+
 =head2 stop_at_end
 
 =head2 ignore_empty_prelude
@@ -339,6 +340,8 @@ TODO
 =head2 document_end_regex
 
 =head2 line_escape_regex
+
+=head2 default_name
 
 =head2 stop_at_end
 
