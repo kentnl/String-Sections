@@ -54,21 +54,26 @@
       },
       "test" : {
          "requires" : {
+            "Data::Dump" : "0",
             "File::Find" : "0",
             "File::Temp" : "0",
+            "FindBin" : "0",
+            "Path::Tiny" : "0",
+            "Sub::Exporter::Progressive" : "0",
             "Test::Fatal" : "0",
-            "Test::More" : "0.98"
+            "Test::More" : "0.98",
+            "lib" : "0"
          }
       }
    },
    "provides" : {
       "String::Sections" : {
          "file" : "lib/String/Sections.pm",
-         "version" : "v0.2.1"
+         "version" : "v0.2.2"
       },
       "String::Sections::Result" : {
          "file" : "lib/String/Sections/Result.pm",
-         "version" : "v0.2.1"
+         "version" : "v0.2.2"
       }
    },
    "release_status" : "stable",
@@ -83,25 +88,30 @@
          "web" : "https://github.com/kentfredric/String-Sections"
       }
    },
-   "version" : "0.2.1",
+   "version" : "0.2.2",
    "x_BuiltWith" : {
       "modules" : {
          "Carp" : "1.29",
+         "Data::Dump" : "1.22",
          "Dist::Zilla::PluginBundle::Author::KENTNL" : "1.7.4",
          "Dist::Zilla::PluginBundle::Author::KENTNL::Lite" : "NA(possibly not installed)",
          "File::Find" : "1.23",
          "File::Temp" : "0.2301",
+         "FindBin" : "1.51",
          "Module::Build" : "0.4005",
          "Moo" : "1.002",
          "Params::Classify" : "0.013",
+         "Path::Tiny" : "0.024",
          "Pod::Coverage::TrustPod" : "0.100002",
          "Scalar::Util" : "1.27",
+         "Sub::Exporter::Progressive" : "0.001010",
          "Test::CPAN::Changes" : "0.20",
          "Test::CPAN::Meta" : "0.23",
          "Test::Fatal" : "0.010",
          "Test::More" : "0.98",
          "Test::Pod" : "1.48",
          "Test::Pod::Coverage" : "1.08",
+         "lib" : "0.63",
          "perl" : "NA(skipped: perl)",
          "strict" : "1.07",
          "version" : "0.9902",

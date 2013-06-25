@@ -1,5 +1,28 @@
 Release history for String-Sections
 
+0.2.2 2013-06-25T04:12:32Z
+ [Bug Fixes]
+ - load_filehandle used ->_default name instead of ->default_name
+ - _isa_string tried to call ::Classif<t> instead of ::Classif<y>
+ - shallow_merge called blessed() instead of _blessed()
+
+ [Dependencies::Added / test requires]
+ - Data::Dump
+ - FindBin
+ - Path::Tiny
+ - Sub::Exporter::Progressive
+ - lib
+
+ [Documentation]
+ - default_name now stubbed
+
+ [Tests]
+ - Much more thoughrough coverage of load_file and load_list behaviour.
+ - Generated tests Facilitated by an arsenal of configuration and
+   templates, using String::Sections to generate the templated tests as
+   well.
+ - devel/compile_test_templates.pl is thus an example of potential usage.
+
 0.2.1 2013-06-21T12:10:27Z
  [Dependencies::Removed / runtime requires]
  - Sub::Quote

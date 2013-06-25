@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::VERSION = '0.2.1';
+  $String::Sections::VERSION = '0.2.2';
 }
 
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
@@ -16,7 +16,6 @@ BEGIN {
 use 5.010001;
 use Moo;
 use String::Sections::Result;
-
 
 
 
@@ -67,7 +66,7 @@ sub load_list {
 
   if ( $self->default_name ) {
     $result_ob->set_current( $self->default_name );
-    $result_ob->add_data_to_current_section();
+    $result_ob->append_data_to_current_section();
   }
 
   for my $line (@rest) {
@@ -91,8 +90,8 @@ sub load_filehandle {
 
   my $result_ob = String::Sections::Result->new();
 
-  if ( $self->_default_name ) {
-    $result_ob->set_current( $self->_default_name );
+  if ( $self->default_name ) {
+    $result_ob->set_current( $self->default_name );
     $result_ob->append_data_to_current_section();
   }
   while ( defined( my $line = <$fh> ) ) {
@@ -121,7 +120,7 @@ sub _isa_regexp {
 sub _isa_string {
   if ( defined $_[0] ) {
     require Params::Classify;
-    Params::Classift::check_string( $_[0] );
+    Params::Classify::check_string( $_[0] );
   }
   return;
 }
@@ -164,7 +163,6 @@ has 'document_end_regex' => _regex_type('document_end_regex');
 
 has 'line_escape_regex' => _regex_type('line_escape_regex');
 
-# String | Undef accessors.
 
 has 'default_name' => _string_type('default_name');
 
@@ -244,7 +242,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.2.1
+version 0.2.2
 
 =head1 SYNOPSIS
 
@@ -325,6 +323,8 @@ TODO
 
 =head2 line_escape_regex
 
+=head2 default_name
+
 =head2 stop_at_end
 
 =head2 ignore_empty_prelude
@@ -340,6 +340,8 @@ TODO
 =head2 document_end_regex
 
 =head2 line_escape_regex
+
+=head2 default_name
 
 =head2 stop_at_end
 

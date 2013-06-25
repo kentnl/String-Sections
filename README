@@ -2,7 +2,7 @@ NAME
     String::Sections - Extract labeled groups of sub-strings from a string.
 
 VERSION
-    version 0.2.1
+    version 0.2.2
 
 SYNOPSIS
       use String::Sections;
@@ -75,6 +75,7 @@ METHODS
   empty_line_regex
   document_end_regex
   line_escape_regex
+  default_name
   stop_at_end
   ignore_empty_prelude
   enable_escapes
@@ -83,6 +84,7 @@ ATTRIBUTES
   empty_line_regex
   document_end_regex
   line_escape_regex
+  default_name
   stop_at_end
   ignore_empty_prelude
   enable_escapes

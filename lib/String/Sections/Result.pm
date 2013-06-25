@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::Result::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::Result::VERSION = '0.2.1';
+  $String::Sections::Result::VERSION = '0.2.2';
 }
 
 # ABSTRACT: Glorified wrapper around a hash representing a parsed String::Sections result
@@ -89,7 +89,7 @@ sub shallow_clone {
 
 
 sub shallow_merge {
-  my $class = blessed( $_[0] ) || $_[0];
+  my $class = _blessed( $_[0] ) || $_[0];
   my $instance = $class->new();
   for my $name ( keys %{ $_[0]->sections } ) {
     $instance->sections->{$name} = $_[0]->sections->{$name};
@@ -123,7 +123,7 @@ String::Sections::Result - Glorified wrapper around a hash representing a parsed
 
 =head1 VERSION
 
-version 0.2.1
+version 0.2.2
 
 =head1 METHODS
 
