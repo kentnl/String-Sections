@@ -1,5 +1,12 @@
 Release history for String-Sections
 
+0.2.3 2013-07-16T03:37:29Z
+ [Bug Fixes]
+ - Need recent Moo for builder => sub {}
+
+ [Dependencies::Changed / runtime requires]
+ - Moo 0 → 1.000008
+
 0.2.2 2013-06-25T04:12:32Z
  [Bug Fixes]
  - load_filehandle used ->_default name instead of ->default_name

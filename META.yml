@@ -25,13 +25,13 @@ name: String-Sections
 provides:
   String::Sections:
     file: lib/String/Sections.pm
-    version: v0.2.2
+    version: v0.2.3
   String::Sections::Result:
     file: lib/String/Sections/Result.pm
-    version: v0.2.2
+    version: v0.2.3
 requires:
   Carp: 0
-  Moo: 0
+  Moo: 1.000008
   Params::Classify: 0
   Scalar::Util: 0
   perl: 5.010001
@@ -41,7 +41,7 @@ resources:
   bugtracker: https://github.com/kentfredric/String-Sections/issues
   homepage: https://github.com/kentfredric/String-Sections
   repository: https://github.com/kentfredric/String-Sections.git
-version: 0.2.2
+version: 0.2.3
 x_BuiltWith:
   modules:
     Carp: 1.29
@@ -81,7 +81,7 @@ x_BuiltWith:
     myarchname: x86_64-linux
     osname: linux
   platform: linux
-  uname: 'Linux 3.9.0-gentoo x86_64 GenuineIntel GNU/Linux'
+  uname: 'Linux 3.10.0-gentoo x86_64 GenuineIntel GNU/Linux'
 x_Dist_Zilla:
   perl:
     version: 5.018000
@@ -89,7 +89,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::Git::NextVersion
       name: '@Author::KENTNL/Git::NextVersion'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::MetaConfig
       name: '@Author::KENTNL/MetaConfig'
@@ -122,7 +122,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::Git::GatherDir
       name: '@Author::KENTNL/Git::GatherDir'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::License
       name: '@Author::KENTNL/License'
@@ -266,23 +266,23 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::Git::Check
       name: '@Author::KENTNL/Git::Check'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::Git::Tag
       name: '@Author::KENTNL/Git::Tag/tag_master'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::Git::Commit
       name: '@Author::KENTNL/Git::Commit'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::Git::CommitBuild
       name: '@Author::KENTNL/Git::CommitBuild'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::Git::Tag
       name: '@Author::KENTNL/Git::Tag/tag_release'
-      version: 2.013
+      version: 2.014
     -
       class: Dist::Zilla::Plugin::UploadToCPAN
       name: '@Author::KENTNL/UploadToCPAN'
