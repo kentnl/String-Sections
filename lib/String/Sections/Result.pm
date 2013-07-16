@@ -18,7 +18,7 @@ package String::Sections::Result;
 
 =cut
 
-use Moo;
+use Moo 1.000008;
 
 ## no critic (RequireArgUnpacking)
 

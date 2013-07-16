@@ -1,6 +1,11 @@
 Release history for String-Sections
 
 {{$NEXT}}
+ [Bug Fixes]
+ - Need recent Moo for builder => sub {}
+
+ [Dependencies::Changed / runtime requires]
+ - Moo 0 → 1.000008
 
 0.2.2 2013-06-25T04:12:32Z
  [Bug Fixes]

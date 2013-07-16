@@ -4,7 +4,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 # VERSION
 
-version 0.2.2
+version 0.2.3
 
 # SYNOPSIS
 
