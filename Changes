@@ -1,6 +1,6 @@
 Release history for String-Sections
 
-0.2.3 2013-07-16T03:37:16Z
+0.2.3 2013-07-16T03:37:29Z
  [Bug Fixes]
  - Need recent Moo for builder => sub {}
 
