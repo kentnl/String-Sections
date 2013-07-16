@@ -44,7 +44,7 @@
       "runtime" : {
          "requires" : {
             "Carp" : "0",
-            "Moo" : "0",
+            "Moo" : "1.000008",
             "Params::Classify" : "0",
             "Scalar::Util" : "0",
             "perl" : "5.010001",
@@ -69,11 +69,11 @@
    "provides" : {
       "String::Sections" : {
          "file" : "lib/String/Sections.pm",
-         "version" : "v0.2.2"
+         "version" : "v0.2.3"
       },
       "String::Sections::Result" : {
          "file" : "lib/String/Sections/Result.pm",
-         "version" : "v0.2.2"
+         "version" : "v0.2.3"
       }
    },
    "release_status" : "stable",
@@ -88,7 +88,7 @@
          "web" : "https://github.com/kentfredric/String-Sections"
       }
    },
-   "version" : "0.2.2",
+   "version" : "0.2.3",
    "x_BuiltWith" : {
       "modules" : {
          "Carp" : "1.29",
@@ -132,7 +132,7 @@
          "osname" : "linux"
       },
       "platform" : "linux",
-      "uname" : "Linux 3.9.0-gentoo x86_64 GenuineIntel GNU/Linux"
+      "uname" : "Linux 3.10.0-gentoo x86_64 GenuineIntel GNU/Linux"
    },
    "x_Dist_Zilla" : {
       "perl" : {
@@ -142,7 +142,7 @@
          {
             "class" : "Dist::Zilla::Plugin::Git::NextVersion",
             "name" : "@Author::KENTNL/Git::NextVersion",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::MetaConfig",
@@ -184,7 +184,7 @@
          {
             "class" : "Dist::Zilla::Plugin::Git::GatherDir",
             "name" : "@Author::KENTNL/Git::GatherDir",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::License",
@@ -367,27 +367,27 @@
          {
             "class" : "Dist::Zilla::Plugin::Git::Check",
             "name" : "@Author::KENTNL/Git::Check",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::Tag",
             "name" : "@Author::KENTNL/Git::Tag/tag_master",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::Commit",
             "name" : "@Author::KENTNL/Git::Commit",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::CommitBuild",
             "name" : "@Author::KENTNL/Git::CommitBuild",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::Git::Tag",
             "name" : "@Author::KENTNL/Git::Tag/tag_release",
-            "version" : "2.013"
+            "version" : "2.014"
          },
          {
             "class" : "Dist::Zilla::Plugin::UploadToCPAN",

@@ -1,5 +1,9 @@
 Release history for String-Sections
 
+0.2.3 2013-07-16T03:35:28Z
+ [Bug Fixes]
+ - Need recent Moo for builder => sub {}
+
 0.2.2 2013-06-25T04:12:32Z
  [Bug Fixes]
  - load_filehandle used ->_default name instead of ->default_name
