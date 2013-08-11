@@ -52,6 +52,7 @@ has '_current' => (
   builder   => sub { return _croak('current never set, but tried to use it') },
 );
 
+
 has '_section_names' => (
   is   => ro =>,
   isa  => $TYPE_SECTION_NAMES,
@@ -252,11 +253,15 @@ This contains the names of the sections in the order they were found/inserted.
 
 =head2 C<_current>
 
+=head2 C<_section_names>
+
 =head1 PRIVATE METHODS
 
 =head2 C<_current>
 
     my $current = $result->_current;
+
+=head2 <_section_names>
 
 =head2 C<_compose_section>
 
