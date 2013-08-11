@@ -51,7 +51,13 @@ This module is designed to behave as a work-alike, except on already extracted s
 
 use 5.010001;
 use Moo;
-use String::Sections::Result;
+use Types::Standard qw( RegexpRef Str Bool Maybe FileHandle ArrayRef );
+
+our $TYPE_REGEXP          = RegexpRef;
+our $TYPE_OPTIONAL_STRING = Maybe [Str];
+our $TYPE_BOOL            = Bool;
+our $TYPE_FILEHANDLE      = FileHandle;
+our $TYPE_INPUT_LIST      = ArrayRef [Str];
 
 =head1 DEVELOPMENT
 
@@ -202,7 +208,8 @@ This behaviour may change in the future, but this is how it is with the least ef
 
 sub load_list {
   my ( $self, @rest ) = @_;
-
+  $TYPE_INPUT_LIST->assert_valid( \@rest );
+  require String::Sections::Result;
   my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
@@ -239,6 +246,8 @@ sub load_string {
 sub load_filehandle {
   my ( $self, $fh ) = @_;
 
+  $TYPE_FILEHANDLE->assert_valid($fh);
+  require String::Sections::Result;
   my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
@@ -260,46 +269,13 @@ sub load_filehandle {
 # Defaults to _default_*_regex.
 #
 
-=p_fn C<_isa_regexp>
-
-=cut
-
-## no critic (RequireArgUnpacking)
-sub _isa_regexp {
-  return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
-  return _croak('Not a Regexp');
-}
-
-=p_fn C<_isa_boolean>
-
-=cut
-
-sub _isa_string {
-  if ( defined $_[0] ) {
-    require Params::Classify;
-    Params::Classify::check_string( $_[0] );
-  }
-  return;
-}
-
-=p_fn C<_isa_boolean>
-
-=cut
-
-sub _isa_boolean {
-  if ( ref $_[0] ) {
-    _croak("$_[0] is not a valid boolean value");
-  }
-  return;
-}
-
 =p_fn C<_regex_type>
 
 =cut
 
 sub _regex_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_REGEXP, builder => '_default_' . $name, lazy => 1 );
 }
 
 =p_fn C<_string_type>
@@ -308,7 +284,7 @@ sub _regex_type {
 
 sub _string_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_OPTIONAL_STRING, builder => '_default_' . $name, lazy => 1 );
 }
 
 =p_fn C<_boolean_type>
@@ -317,7 +293,7 @@ sub _string_type {
 
 sub _boolean_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_BOOL, builder => '_default_' . $name, lazy => 1 );
 }
 
 =attr C<header_regex>

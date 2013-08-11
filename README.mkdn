@@ -4,7 +4,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 # VERSION
 
-version 0.3.0
+version 0.2.4
 
 # SYNOPSIS
 
@@ -134,12 +134,6 @@ TODO
 # PRIVATE FUNCTIONS
 
 ## `_croak`
-
-## `_isa_regexp`
-
-## `_isa_boolean`
-
-## `_isa_boolean`
 
 ## `_regex_type`
 

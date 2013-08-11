@@ -38,8 +38,18 @@ sub _blessed { require Scalar::Util; goto &Scalar::Util::blessed }
 
 =cut
 
+use Types::Standard qw( HashRef ArrayRef ScalarRef Str Maybe );
+
+our $TYPE_SECTION_NAME     = Str;
+our $TYPE_SECTION_NAMES    = ArrayRef [Str];
+our $TYPE_SECTION          = ScalarRef [Str];
+our $TYPE_OPTIONAL_SECTION = Maybe [$TYPE_SECTION];
+our $TYPE_CURRENT          = Maybe [Str];
+our $TYPE_SECTIONS         = HashRef [$TYPE_SECTION];
+
 has 'sections' => (
   is      => ro =>,
+  isa     => $TYPE_SECTIONS,
   lazy    => 1,
   builder => sub {
     return {};
@@ -67,6 +77,7 @@ has 'sections' => (
 
 has '_current' => (
   is        => ro  =>,
+  isa       => $TYPE_CURRENT,
   reader    => '_current',
   writer    => 'set_current',
   predicate => 'has_current',
@@ -75,9 +86,10 @@ has '_current' => (
 );
 
 has '_section_names' => (
-    is => ro =>,
-    lazy => 1,
-    builder => sub { return [] }
+  is   => ro =>,
+  isa  => $TYPE_SECTION_NAMES,
+  lazy => 1,
+  builder => sub { return [] }
 );
 
 =method C<section>
@@ -87,7 +99,10 @@ has '_section_names' => (
 
 =cut
 
-sub section { return $_[0]->sections->{ $_[1] } }
+sub section {
+  $TYPE_SECTION_NAME->assert_valid( $_[1] );
+  return $_[0]->sections->{ $_[1] };
+}
 
 =method C<section_names>
 
@@ -98,7 +113,6 @@ This contains the names of the sections in the order they were found/inserted.
 =cut
 
 sub section_names { return ( my @list = @{ $_[0]->_section_names } ) }
-
 
 =method C<section_names_sorted>
 
@@ -114,7 +128,10 @@ sub section_names_sorted { return ( my @list = sort @{ $_[0]->_section_names } )
 
 =cut
 
-sub has_section { return exists $_[0]->sections->{ $_[1] } }
+sub has_section {
+  $TYPE_SECTION_NAME->assert_valid( $_[1] );
+  return exists $_[0]->sections->{ $_[1] };
+}
 
 =method C<set_section>
 
@@ -123,11 +140,13 @@ sub has_section { return exists $_[0]->sections->{ $_[1] } }
 =cut
 
 sub set_section {
-    if ( not exists $_[0]->sections->{$_[1]} ) {
-        push @{ $_[0]->_section_names }, $_[1];
-    }
-    $_[0]->sections->{ $_[1] } = $_[2];
-    return;
+  $TYPE_SECTION_NAME->assert_valid( $_[1] );
+  $TYPE_SECTION->assert_valid( $_[2] );
+  if ( not exists $_[0]->sections->{ $_[1] } ) {
+    push @{ $_[0]->_section_names }, $_[1];
+  }
+  $_[0]->sections->{ $_[1] } = $_[2];
+  return;
 }
 
 =method C<append_data_to_current_section>
@@ -140,6 +159,7 @@ sub set_section {
 =cut
 
 sub append_data_to_current_section {
+  $TYPE_OPTIONAL_SECTION->assert_valid( $_[1] );
   if ( not exists $_[0]->sections->{ $_[0]->_current } ) {
     push @{ $_[0]->_section_names }, $_[0]->_current;
     my $blank = q{};
@@ -161,6 +181,8 @@ sub append_data_to_current_section {
 =cut
 
 sub append_data_to_section {
+  $TYPE_SECTION_NAME->assert_valid( $_[1] );
+  $TYPE_OPTIONAL_SECTION->assert_valid( $_[2] );
   if ( not exists $_[0]->sections->{ $_[1] } ) {
     push @{ $_[0]->_section_names }, $_[1];
     my $blank = q{};
@@ -208,10 +230,10 @@ sub shallow_merge {
   my $class = _blessed( $_[0] ) || $_[0];
   my $instance = $class->new();
   for my $name ( $_[0]->section_names ) {
-    $instance->set_section($name,  $_[0]->sections->{$name});
+    $instance->set_section( $name, $_[0]->sections->{$name} );
   }
   for my $name ( $_[1]->section_names ) {
-    $instance->set_section( $name, $_[1]->sections->{$name});
+    $instance->set_section( $name, $_[1]->sections->{$name} );
   }
   return $instance;
 }
@@ -223,6 +245,7 @@ sub shallow_merge {
 =cut
 
 sub _compose_section {
+  $TYPE_SECTION_NAME->assert_valid( $_[1] );
   return sprintf qq[__[%s]__\n%s], $_[1], ${ $_[0]->sections->{ $_[1] } };
 }
 
@@ -234,7 +257,7 @@ sub _compose_section {
 
 sub to_s {
   my $self = $_[0];
-  return join qq{\n}, map { $self->_compose_section($_) } sort keys %{ $self->sections };
+  return join qq{\n}, map { $self->_compose_section($_) } $self->section_names_sorted;
 }
 
 1;
