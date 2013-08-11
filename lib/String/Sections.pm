@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::VERSION = '0.2.4';
+  $String::Sections::VERSION = '0.3.0';
 }
 
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
@@ -15,7 +15,13 @@ BEGIN {
 
 use 5.010001;
 use Moo;
-use String::Sections::Result;
+use Types::Standard qw( RegexpRef Str Bool Maybe FileHandle ArrayRef );
+
+our $TYPE_REGEXP          = RegexpRef;
+our $TYPE_OPTIONAL_STRING = Maybe [Str];
+our $TYPE_BOOL            = Bool;
+our $TYPE_FILEHANDLE      = FileHandle;
+our $TYPE_INPUT_LIST      = ArrayRef [Str];
 
 
 
@@ -61,7 +67,8 @@ sub __add_line {
 
 sub load_list {
   my ( $self, @rest ) = @_;
-
+  $TYPE_INPUT_LIST->assert_valid( \@rest );
+  require String::Sections::Result;
   my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
@@ -88,6 +95,8 @@ sub load_string {
 sub load_filehandle {
   my ( $self, $fh ) = @_;
 
+  $TYPE_FILEHANDLE->assert_valid($fh);
+  require String::Sections::Result;
   my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
@@ -109,24 +118,22 @@ sub load_filehandle {
 # Defaults to _default_*_regex.
 #
 
-use Types::Standard qr( RegexpRef Str Bool );
-
 
 sub _regex_type {
   my $name = shift;
-  return ( is => 'ro', isa => RegexpRef , builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_REGEXP, builder => '_default_' . $name, lazy => 1 );
 }
 
 
 sub _string_type {
   my $name = shift;
-  return ( is => 'ro', isa => Str, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_OPTIONAL_STRING, builder => '_default_' . $name, lazy => 1 );
 }
 
 
 sub _boolean_type {
   my $name = shift;
-  return ( is => 'ro', isa => Bool, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_BOOL, builder => '_default_' . $name, lazy => 1 );
 }
 
 
@@ -220,7 +227,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.2.4
+version 0.3.0
 
 =head1 SYNOPSIS
 
