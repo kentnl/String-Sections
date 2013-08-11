@@ -56,7 +56,7 @@ has '_section_names' => (
   is   => ro =>,
   isa  => $TYPE_SECTION_NAMES,
   lazy => 1,
-  builder => sub { return [] }
+  builder => sub { return [] },
 );
 
 
