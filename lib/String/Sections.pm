@@ -275,15 +275,15 @@ This module is designed to behave as a work-alike, except on already extracted s
 
 =head1 METHODS
 
-=head2 new
+=head2 C<new>
 
-=head2 new( %args )
+=head2 C<new( %args )>
 
   my $object = String::Sections->new();
 
   my $object = String::Sections->new( attribute_name => 'value' );
 
-=head2 load_list ( @strings )
+=head2 C<load_list ( @strings )>
 
   my @strings = <$fh>;
 
@@ -307,83 +307,83 @@ is concatenated into a large singular string, e.g.:
 
 This behaviour may change in the future, but this is how it is with the least effort for now.
 
-=head2 load_string
+=head2 C<load_string>
 
 TODO
 
-=head2 load_filehandle( $fh )
+=head2 C<load_filehandle( $fh )>
 
   my $result = $object->load_filehandle( $fh )
 
-=head2 header_regex
+=head2 C<header_regex>
 
-=head2 empty_line_regex
+=head2 C<empty_line_regex>
 
-=head2 document_end_regex
+=head2 C<document_end_regex>
 
-=head2 line_escape_regex
+=head2 C<line_escape_regex>
 
-=head2 default_name
+=head2 C<default_name>
 
-=head2 stop_at_end
+=head2 C<stop_at_end>
 
-=head2 ignore_empty_prelude
+=head2 C<ignore_empty_prelude>
 
-=head2 enable_escapes
+=head2 C<enable_escapes>
 
 =head1 ATTRIBUTES
 
-=head2 header_regex
+=head2 C<header_regex>
 
-=head2 empty_line_regex
+=head2 C<empty_line_regex>
 
-=head2 document_end_regex
+=head2 C<document_end_regex>
 
-=head2 line_escape_regex
+=head2 C<line_escape_regex>
 
-=head2 default_name
+=head2 C<default_name>
 
-=head2 stop_at_end
+=head2 C<stop_at_end>
 
-=head2 ignore_empty_prelude
+=head2 C<ignore_empty_prelude>
 
-=head2 enable_escapes
+=head2 C<enable_escapes>
 
 =head1 PRIVATE METHODS
 
-=head2 __add_line
+=head2 C<__add_line>
 
-=head2 _default_header_regex
+=head2 C<_default_header_regex>
 
-=head2 _default_empty_line_regex
+=head2 C<_default_empty_line_regex>
 
-=head2 _default_document_end_regex
+=head2 C<_default_document_end_regex>
 
-=head2 _default_line_escape_regex
+=head2 C<_default_line_escape_regex>
 
-=head2 _default_default_name
+=head2 C<_default_default_name>
 
-=head2 _default_stop_at_end
+=head2 C<_default_stop_at_end>
 
-=head2 _default_ignore_empty_prelude
+=head2 C<_default_ignore_empty_prelude>
 
-=head2 _default_enable_escapes
+=head2 C<_default_enable_escapes>
 
 =head1 PRIVATE FUNCTIONS
 
-=head2 _croak
+=head2 C<_croak>
 
-=head2 _isa_regexp
+=head2 C<_isa_regexp>
 
-=head2 _isa_boolean
+=head2 C<_isa_boolean>
 
-=head2 _isa_boolean
+=head2 C<_isa_boolean>
 
-=head2 _regex_type
+=head2 C<_regex_type>
 
-=head2 _string_type
+=head2 C<_string_type>
 
-=head2 _boolean_type
+=head2 C<_boolean_type>
 
 =begin MetaPOD::JSON v1.1.0
 

@@ -53,6 +53,8 @@ sub section { return $_[0]->sections->{ $_[1] } }
 
 sub section_names { return ( my @list = @{ $_[0]->_section_names } ) }
 
+
+
 sub section_names_sorted { return ( my @list = sort @{ $_[0]->_section_names } ) }
 
 
@@ -143,56 +145,60 @@ version 0.3.0
 
 =head1 METHODS
 
-=head2 sections
+=head2 C<sections>
 
     my $sections = $result->sections;
     for my $key( keys %{$sections}) {
         ...
     }
 
-=head2 set_current
+=head2 C<set_current>
 
     $result->set_current('foo');
 
-=head2 has_current
+=head2 C<has_current>
 
     if ( $result->has_current ){
     }
 
-=head2 section
+=head2 C<section>
 
     my $ref = $result->section( $name );
     print ${$ref};
 
-=head2 section_names
+=head2 C<section_names>
+
+This contains the names of the sections in the order they were found/inserted.
 
     my @names = $result->section_names;
 
-=head2 has_section
+=head2 C<section_names_sorted>
+
+=head2 C<has_section>
 
     if ( $result->has_section($name) ) {
         ...
     }
 
-=head2 set_section
+=head2 C<set_section>
 
     $result->set_section($name, \$data);
 
-=head2 append_data_to_current_section
+=head2 C<append_data_to_current_section>
 
     # Unitialise slot
     $result->append_data_to_current_section();
     # Unitialise and/or extend slot
     $result->append_data_to_current_section('somedata');
 
-=head2 append_data_to_section
+=head2 C<append_data_to_section>
 
     # Unitialise slot
     $result->append_data_to_current_section( $name );
     # Unitialise and/or extend slot
     $result->append_data_to_current_section( $name, 'somedata');
 
-=head2 shallow_clone
+=head2 C<shallow_clone>
 
     my $clone = $result->shallow_clone;
 
@@ -200,7 +206,7 @@ version 0.3.0
         print "clone success!"
     }
 
-=head2 shallow_merge
+=head2 C<shallow_merge>
 
     my $merged = $result->shallow_merge( $other );
 
@@ -211,25 +217,25 @@ version 0.3.0
         print "bar copied from other successfully!"
     }
 
-=head2 to_s
+=head2 C<to_s>
 
     my $str = $result->to_s
 
 =head1 ATTRIBUTES
 
-=head2 sections
+=head2 C<sections>
 
 =head1 PRIVATE ATTRIBUTES
 
-=head2 _current
+=head2 C<_current>
 
 =head1 PRIVATE METHODS
 
-=head2 _current
+=head2 C<_current>
 
     my $current = $result->_current;
 
-=head2 _compose_section
+=head2 C<_compose_section>
 
     my $str = $result->_compose_section('bar');
 
