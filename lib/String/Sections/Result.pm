@@ -85,11 +85,17 @@ has '_current' => (
   builder   => sub { return _croak('current never set, but tried to use it') },
 );
 
+=p_attr C<_section_names>
+
+=p_method <_section_names>
+
+=cut
+
 has '_section_names' => (
   is   => ro =>,
   isa  => $TYPE_SECTION_NAMES,
   lazy => 1,
-  builder => sub { return [] }
+  builder => sub { return [] },
 );
 
 =method C<section>
