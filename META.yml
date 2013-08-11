@@ -3,20 +3,20 @@ abstract: 'Extract labeled groups of sub-strings from a string.'
 author:
   - 'Kent Fredric <kentnl@cpan.org>'
 build_requires:
+  Capture::Tiny: 0
   Data::Dump: 0
-  File::Find: 0
-  File::Temp: 0
   FindBin: 0
-  Module::Build: 0.4005
+  Module::Build: 0.4007
   Path::Tiny: 0
   Sub::Exporter::Progressive: 0
   Test::Fatal: 0
   Test::More: 0.98
+  blib: 0
   lib: 0
 configure_requires:
-  Module::Build: 0.4005
+  Module::Build: 0.4007
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.131560'
+generated_by: 'Dist::Zilla version 4.300035, CPAN::Meta::Converter version 2.132140'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -25,15 +25,15 @@ name: String-Sections
 provides:
   String::Sections:
     file: lib/String/Sections.pm
-    version: v0.2.3
+    version: v0.3.0
   String::Sections::Result:
     file: lib/String/Sections/Result.pm
-    version: v0.2.3
+    version: v0.3.0
 requires:
   Carp: 0
   Moo: 1.000008
-  Params::Classify: 0
   Scalar::Util: 0
+  Types::Standard: 0
   perl: 5.010001
   strict: 0
   warnings: 0
@@ -41,29 +41,29 @@ resources:
   bugtracker: https://github.com/kentfredric/String-Sections/issues
   homepage: https://github.com/kentfredric/String-Sections
   repository: https://github.com/kentfredric/String-Sections.git
-version: 0.2.3
+version: 0.3.0
 x_BuiltWith:
   modules:
+    Capture::Tiny: 0.22
     Carp: 1.29
     Data::Dump: 1.22
-    Dist::Zilla::PluginBundle::Author::KENTNL: 1.7.4
+    Dist::Zilla::PluginBundle::Author::KENTNL: 1.8.0
     Dist::Zilla::PluginBundle::Author::KENTNL::Lite: 'NA(possibly not installed)'
-    File::Find: 1.23
-    File::Temp: 0.2301
     FindBin: 1.51
-    Module::Build: 0.4005
-    Moo: 1.002
-    Params::Classify: 0.013
-    Path::Tiny: 0.024
+    Module::Build: 0.4007
+    Moo: 1.003
+    Path::Tiny: 0.027
     Pod::Coverage::TrustPod: 0.100002
-    Scalar::Util: 1.27
+    Scalar::Util: 1.3
     Sub::Exporter::Progressive: 0.001010
-    Test::CPAN::Changes: 0.20
+    Test::CPAN::Changes: 0.22
     Test::CPAN::Meta: 0.23
     Test::Fatal: 0.010
     Test::More: 0.98
     Test::Pod: 1.48
     Test::Pod::Coverage: 1.08
+    Types::Standard: 0.022
+    blib: 1.06
     lib: 0.63
     perl: 'NA(skipped: perl)'
     strict: 1.07
@@ -97,11 +97,11 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::GithubMeta
       name: '@Author::KENTNL/GithubMeta'
-      version: 0.28
+      version: 0.30
     -
       class: Dist::Zilla::Plugin::MetaProvides::Package
       name: '@Author::KENTNL/MetaProvides::Package'
-      version: 1.14000002
+      version: 1.14000003
     -
       class: Dist::Zilla::Plugin::MetaData::BuiltWith
       config:
@@ -154,7 +154,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::ReportVersions::Tiny
       name: '@Author::KENTNL/ReportVersions::Tiny'
-      version: 1.08
+      version: 1.09
     -
       class: Dist::Zilla::Plugin::Test::Kwalitee
       name: '@Author::KENTNL/Test::Kwalitee'
@@ -169,8 +169,14 @@ x_Dist_Zilla:
       version: 2.000005
     -
       class: Dist::Zilla::Plugin::Test::Compile
+      config:
+        Dist::Zilla::Plugin::Test::Compile:
+          module_finder:
+            - ':InstallModules'
+          script_finder:
+            - ':ExecFiles'
       name: '@Author::KENTNL/Test::Compile'
-      version: 2.002
+      version: 2.018
     -
       class: Dist::Zilla::Plugin::Test::Perl::Critic
       name: '@Author::KENTNL/Test::Perl::Critic'
@@ -190,7 +196,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::PodWeaver
       name: '@Author::KENTNL/PodWeaver'
-      version: 3.101641
+      version: 3.101642
     -
       class: Dist::Zilla::Plugin::NextRelease
       name: '@Author::KENTNL/NextRelease'
@@ -226,11 +232,7 @@ x_Dist_Zilla:
     -
       class: Dist::Zilla::Plugin::Author::KENTNL::MinimumPerl
       name: '@Author::KENTNL/Author::KENTNL::MinimumPerl'
-      version: 1.7.4
-    -
-      class: Dist::Zilla::Plugin::Author::KENTNL::Prereqs::Latest::Selective
-      name: '@Author::KENTNL/Author::KENTNL::Prereqs::Latest::Selective'
-      version: 0.1.0
+      version: 1.8.0
     -
       class: Dist::Zilla::Plugin::Authority
       name: '@Author::KENTNL/Authority'
@@ -291,6 +293,42 @@ x_Dist_Zilla:
       class: Dist::Zilla::Plugin::Twitter
       name: '@Author::KENTNL/Twitter'
       version: 0.021
+    -
+      class: Dist::Zilla::Plugin::Prereqs::MatchInstalled
+      config:
+        Dist::Zilla::Plugin::Prereqs::MatchInstalled:
+          applyto:
+            - build.requires
+            - build.recommends
+            - build.suggests
+            - test.requires
+            - test.recommends
+            - test.suggests
+            - runtime.requires
+            - runtime.recommends
+            - runtime.suggests
+            - configure.requires
+            - configure.recommends
+            - configure.suggests
+            - develop.requires
+            - develop.recommends
+            - develop.suggests
+          applyto_phase:
+            - build
+            - test
+            - runtime
+            - configure
+            - develop
+          applyto_relation:
+            - requires
+            - recommends
+            - suggests
+          modules:
+            - Module::Build
+            - Test::More
+            - Dist::Zilla::PluginBundle::Author::KENTNL
+      name: '@Author::KENTNL/Prereqs::MatchInstalled'
+      version: 0.1.1
     -
       class: Dist::Zilla::Plugin::FinderCode
       name: ':InstallModules'

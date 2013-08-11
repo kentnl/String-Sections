@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::VERSION = '0.2.3';
+  $String::Sections::VERSION = '0.3.0';
 }
 
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
@@ -15,7 +15,13 @@ BEGIN {
 
 use 5.010001;
 use Moo;
-use String::Sections::Result;
+use Types::Standard qw( RegexpRef Str Bool Maybe FileHandle ArrayRef );
+
+our $TYPE_REGEXP          = RegexpRef;
+our $TYPE_OPTIONAL_STRING = Maybe [Str];
+our $TYPE_BOOL            = Bool;
+our $TYPE_FILEHANDLE      = FileHandle;
+our $TYPE_INPUT_LIST      = ArrayRef [Str];
 
 
 
@@ -61,7 +67,8 @@ sub __add_line {
 
 sub load_list {
   my ( $self, @rest ) = @_;
-
+  $TYPE_INPUT_LIST->assert_valid( \@rest );
+  require String::Sections::Result;
   my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
@@ -88,6 +95,8 @@ sub load_string {
 sub load_filehandle {
   my ( $self, $fh ) = @_;
 
+  $TYPE_FILEHANDLE->assert_valid($fh);
+  require String::Sections::Result;
   my $result_ob = String::Sections::Result->new();
 
   if ( $self->default_name ) {
@@ -110,45 +119,21 @@ sub load_filehandle {
 #
 
 
-## no critic (RequireArgUnpacking)
-sub _isa_regexp {
-  return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
-  return _croak('Not a Regexp');
-}
-
-
-sub _isa_string {
-  if ( defined $_[0] ) {
-    require Params::Classify;
-    Params::Classify::check_string( $_[0] );
-  }
-  return;
-}
-
-
-sub _isa_boolean {
-  if ( ref $_[0] ) {
-    _croak("$_[0] is not a valid boolean value");
-  }
-  return;
-}
-
-
 sub _regex_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_REGEXP, builder => '_default_' . $name, lazy => 1 );
 }
 
 
 sub _string_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_OPTIONAL_STRING, builder => '_default_' . $name, lazy => 1 );
 }
 
 
 sub _boolean_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => $TYPE_BOOL, builder => '_default_' . $name, lazy => 1 );
 }
 
 
@@ -242,7 +227,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.2.3
+version 0.3.0
 
 =head1 SYNOPSIS
 
@@ -275,15 +260,15 @@ This module is designed to behave as a work-alike, except on already extracted s
 
 =head1 METHODS
 
-=head2 new
+=head2 C<new>
 
-=head2 new( %args )
+=head2 C<new( %args )>
 
   my $object = String::Sections->new();
 
   my $object = String::Sections->new( attribute_name => 'value' );
 
-=head2 load_list ( @strings )
+=head2 C<load_list ( @strings )>
 
   my @strings = <$fh>;
 
@@ -307,83 +292,77 @@ is concatenated into a large singular string, e.g.:
 
 This behaviour may change in the future, but this is how it is with the least effort for now.
 
-=head2 load_string
+=head2 C<load_string>
 
 TODO
 
-=head2 load_filehandle( $fh )
+=head2 C<load_filehandle( $fh )>
 
   my $result = $object->load_filehandle( $fh )
 
-=head2 header_regex
+=head2 C<header_regex>
 
-=head2 empty_line_regex
+=head2 C<empty_line_regex>
 
-=head2 document_end_regex
+=head2 C<document_end_regex>
 
-=head2 line_escape_regex
+=head2 C<line_escape_regex>
 
-=head2 default_name
+=head2 C<default_name>
 
-=head2 stop_at_end
+=head2 C<stop_at_end>
 
-=head2 ignore_empty_prelude
+=head2 C<ignore_empty_prelude>
 
-=head2 enable_escapes
+=head2 C<enable_escapes>
 
 =head1 ATTRIBUTES
 
-=head2 header_regex
+=head2 C<header_regex>
 
-=head2 empty_line_regex
+=head2 C<empty_line_regex>
 
-=head2 document_end_regex
+=head2 C<document_end_regex>
 
-=head2 line_escape_regex
+=head2 C<line_escape_regex>
 
-=head2 default_name
+=head2 C<default_name>
 
-=head2 stop_at_end
+=head2 C<stop_at_end>
 
-=head2 ignore_empty_prelude
+=head2 C<ignore_empty_prelude>
 
-=head2 enable_escapes
+=head2 C<enable_escapes>
 
 =head1 PRIVATE METHODS
 
-=head2 __add_line
+=head2 C<__add_line>
 
-=head2 _default_header_regex
+=head2 C<_default_header_regex>
 
-=head2 _default_empty_line_regex
+=head2 C<_default_empty_line_regex>
 
-=head2 _default_document_end_regex
+=head2 C<_default_document_end_regex>
 
-=head2 _default_line_escape_regex
+=head2 C<_default_line_escape_regex>
 
-=head2 _default_default_name
+=head2 C<_default_default_name>
 
-=head2 _default_stop_at_end
+=head2 C<_default_stop_at_end>
 
-=head2 _default_ignore_empty_prelude
+=head2 C<_default_ignore_empty_prelude>
 
-=head2 _default_enable_escapes
+=head2 C<_default_enable_escapes>
 
 =head1 PRIVATE FUNCTIONS
 
-=head2 _croak
+=head2 C<_croak>
 
-=head2 _isa_regexp
+=head2 C<_regex_type>
 
-=head2 _isa_boolean
+=head2 C<_string_type>
 
-=head2 _isa_boolean
-
-=head2 _regex_type
-
-=head2 _string_type
-
-=head2 _boolean_type
+=head2 C<_boolean_type>
 
 =begin MetaPOD::JSON v1.1.0
 

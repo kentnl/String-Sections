@@ -1,5 +1,34 @@
 Release history for String-Sections
 
+0.3.0 2013-08-11T07:11:18Z
+ [!Major]
+ - section_names now retains document order where possible.
+ - use section_names_sorted if you need them sorted
+ - More type constraints inside.
+
+ [Dependencies::Added / runtime requires]
+ - Types::Standard
+
+ [Dependencies::Added / test requires]
+ - Capture::Tiny
+ - blib
+
+ [Dependencies::Changed / build requires]
+ - Module::Build 0.4005 → 0.4007
+
+ [Dependencies::Changed / configure requires]
+ - Module::Build 0.4005 → 0.4007
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.7.4 → v1.8.0
+
+ [Dependencies::Removed / runtime requires]
+ - Params::Classify
+
+ [Dependencies::Removed / test requires]
+ - File::Find
+ - File::Temp
+
 0.2.3 2013-07-16T03:37:29Z
  [Bug Fixes]
  - Need recent Moo for builder => sub {}
