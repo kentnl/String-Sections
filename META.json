@@ -45,8 +45,8 @@
          "requires" : {
             "Carp" : "0",
             "Moo" : "1.000008",
-            "Params::Classify" : "0",
             "Scalar::Util" : "0",
+            "Types::Standard" : "0",
             "perl" : "5.010001",
             "strict" : "0",
             "warnings" : "0"
@@ -69,11 +69,11 @@
    "provides" : {
       "String::Sections" : {
          "file" : "lib/String/Sections.pm",
-         "version" : "v0.3.0"
+         "version" : "v0.2.4"
       },
       "String::Sections::Result" : {
          "file" : "lib/String/Sections/Result.pm",
-         "version" : "v0.3.0"
+         "version" : "v0.2.4"
       }
    },
    "release_status" : "stable",
@@ -88,7 +88,7 @@
          "web" : "https://github.com/kentfredric/String-Sections"
       }
    },
-   "version" : "0.3.0",
+   "version" : "0.2.4",
    "x_BuiltWith" : {
       "modules" : {
          "Capture::Tiny" : "0.22",
@@ -99,7 +99,6 @@
          "FindBin" : "1.51",
          "Module::Build" : "0.4007",
          "Moo" : "1.003",
-         "Params::Classify" : "0.013",
          "Path::Tiny" : "0.027",
          "Pod::Coverage::TrustPod" : "0.100002",
          "Scalar::Util" : "1.3",
@@ -110,6 +109,7 @@
          "Test::More" : "0.98",
          "Test::Pod" : "1.48",
          "Test::Pod::Coverage" : "1.08",
+         "Types::Standard" : "0.022",
          "blib" : "1.06",
          "lib" : "0.63",
          "perl" : "NA(skipped: perl)",

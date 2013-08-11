@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::VERSION = '0.3.0';
+  $String::Sections::VERSION = '0.2.4';
 }
 
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
@@ -109,46 +109,24 @@ sub load_filehandle {
 # Defaults to _default_*_regex.
 #
 
-
-## no critic (RequireArgUnpacking)
-sub _isa_regexp {
-  return 1 if ( ref $_[0] and ref $_[0] eq 'Regexp' );
-  return _croak('Not a Regexp');
-}
-
-
-sub _isa_string {
-  if ( defined $_[0] ) {
-    require Params::Classify;
-    Params::Classify::check_string( $_[0] );
-  }
-  return;
-}
-
-
-sub _isa_boolean {
-  if ( ref $_[0] ) {
-    _croak("$_[0] is not a valid boolean value");
-  }
-  return;
-}
+use Types::Standard qr( RegexpRef Str Bool );
 
 
 sub _regex_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => RegexpRef , builder => '_default_' . $name, lazy => 1 );
 }
 
 
 sub _string_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => Str, builder => '_default_' . $name, lazy => 1 );
 }
 
 
 sub _boolean_type {
   my $name = shift;
-  return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
+  return ( is => 'ro', isa => Bool, builder => '_default_' . $name, lazy => 1 );
 }
 
 
@@ -242,7 +220,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.3.0
+version 0.2.4
 
 =head1 SYNOPSIS
 
@@ -372,12 +350,6 @@ TODO
 =head1 PRIVATE FUNCTIONS
 
 =head2 C<_croak>
-
-=head2 C<_isa_regexp>
-
-=head2 C<_isa_boolean>
-
-=head2 C<_isa_boolean>
 
 =head2 C<_regex_type>
 
