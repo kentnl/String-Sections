@@ -7,17 +7,17 @@ use Module::Build 0.3601;
 
 my %module_build_args = (
   "build_requires" => {
-    "Module::Build" => "0.4005"
+    "Module::Build" => "0.4007"
   },
   "configure_requires" => {
-    "Module::Build" => "0.4005"
+    "Module::Build" => "0.4007"
   },
   "dist_abstract" => "Extract labeled groups of sub-strings from a string.",
   "dist_author" => [
     "Kent Fredric <kentnl\@cpan.org>"
   ],
   "dist_name" => "String-Sections",
-  "dist_version" => "0.2.3",
+  "dist_version" => "0.2.4",
   "license" => "perl",
   "module_name" => "String::Sections",
   "recommends" => {},
@@ -33,14 +33,14 @@ my %module_build_args = (
   },
   "script_files" => [],
   "test_requires" => {
+    "Capture::Tiny" => 0,
     "Data::Dump" => 0,
-    "File::Find" => 0,
-    "File::Temp" => 0,
     "FindBin" => 0,
     "Path::Tiny" => 0,
     "Sub::Exporter::Progressive" => 0,
     "Test::Fatal" => 0,
     "Test::More" => "0.98",
+    "blib" => 0,
     "lib" => 0
   }
 );

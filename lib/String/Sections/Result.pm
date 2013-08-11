@@ -6,7 +6,7 @@ BEGIN {
   $String::Sections::Result::AUTHORITY = 'cpan:KENTNL';
 }
 {
-  $String::Sections::Result::VERSION = '0.2.3';
+  $String::Sections::Result::VERSION = '0.2.4';
 }
 
 # ABSTRACT: Glorified wrapper around a hash representing a parsed String::Sections result
@@ -41,21 +41,36 @@ has '_current' => (
   builder   => sub { return _croak('current never set, but tried to use it') },
 );
 
+has '_section_names' => (
+    is => ro =>,
+    lazy => 1,
+    builder => sub { return [] }
+);
+
 
 sub section { return $_[0]->sections->{ $_[1] } }
 
 
-sub section_names { return ( my @list = sort keys %{ $_[0]->sections } ) }
+sub section_names { return ( my @list = @{ $_[0]->_section_names } ) }
+
+sub section_names_sorted { return ( my @list = sort @{ $_[0]->_section_names } ) }
 
 
 sub has_section { return exists $_[0]->sections->{ $_[1] } }
 
 
-sub set_section { $_[0]->sections->{ $_[1] } = $_[2]; return; }
+sub set_section {
+    if ( not exists $_[0]->sections->{$_[1]} ) {
+        push @{ $_[0]->_section_names }, $_[1];
+    }
+    $_[0]->sections->{ $_[1] } = $_[2];
+    return;
+}
 
 
 sub append_data_to_current_section {
   if ( not exists $_[0]->sections->{ $_[0]->_current } ) {
+    push @{ $_[0]->_section_names }, $_[0]->_current;
     my $blank = q{};
     $_[0]->sections->{ $_[0]->_current } = \$blank;
   }
@@ -68,6 +83,7 @@ sub append_data_to_current_section {
 
 sub append_data_to_section {
   if ( not exists $_[0]->sections->{ $_[1] } ) {
+    push @{ $_[0]->_section_names }, $_[1];
     my $blank = q{};
     $_[0]->sections->{ $_[1] } = \$blank;
   }
@@ -81,8 +97,8 @@ sub append_data_to_section {
 sub shallow_clone {
   my $class = _blessed( $_[0] ) || $_[0];
   my $instance = $class->new();
-  for my $name ( keys %{ $_[0]->sections } ) {
-    $instance->sections->{$name} = $_[0]->sections->{$name};
+  for my $name ( $_[0]->section_names ) {
+    $instance->set_section( $name, $_[0]->sections->{$name} );
   }
   return $instance;
 }
@@ -91,11 +107,11 @@ sub shallow_clone {
 sub shallow_merge {
   my $class = _blessed( $_[0] ) || $_[0];
   my $instance = $class->new();
-  for my $name ( keys %{ $_[0]->sections } ) {
-    $instance->sections->{$name} = $_[0]->sections->{$name};
+  for my $name ( $_[0]->section_names ) {
+    $instance->set_section($name,  $_[0]->sections->{$name});
   }
-  for my $name ( keys %{ $_[1]->sections } ) {
-    $instance->sections->{$name} = $_[1]->sections->{$name};
+  for my $name ( $_[1]->section_names ) {
+    $instance->set_section( $name, $_[1]->sections->{$name});
   }
   return $instance;
 }
@@ -123,7 +139,7 @@ String::Sections::Result - Glorified wrapper around a hash representing a parsed
 
 =head1 VERSION
 
-version 0.2.3
+version 0.2.4
 
 =head1 METHODS
 
