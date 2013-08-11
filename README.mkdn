@@ -37,15 +37,15 @@ This module is designed to behave as a work-alike, except on already extracted s
 
 # METHODS
 
-## new
+## `new`
 
-## new( %args )
+## `new( %args )`
 
     my $object = String::Sections->new();
 
     my $object = String::Sections->new( attribute_name => 'value' );
 
-## load\_list ( @strings )
+## `load_list ( @strings )`
 
     my @strings = <$fh>;
 
@@ -69,83 +69,83 @@ is concatenated into a large singular string, e.g.:
 
 This behaviour may change in the future, but this is how it is with the least effort for now.
 
-## load\_string
+## `load_string`
 
 TODO
 
-## load\_filehandle( $fh )
+## `load_filehandle( $fh )`
 
     my $result = $object->load_filehandle( $fh )
 
-## header\_regex
+## `header_regex`
 
-## empty\_line\_regex
+## `empty_line_regex`
 
-## document\_end\_regex
+## `document_end_regex`
 
-## line\_escape\_regex
+## `line_escape_regex`
 
-## default\_name
+## `default_name`
 
-## stop\_at\_end
+## `stop_at_end`
 
-## ignore\_empty\_prelude
+## `ignore_empty_prelude`
 
-## enable\_escapes
+## `enable_escapes`
 
 # ATTRIBUTES
 
-## header\_regex
+## `header_regex`
 
-## empty\_line\_regex
+## `empty_line_regex`
 
-## document\_end\_regex
+## `document_end_regex`
 
-## line\_escape\_regex
+## `line_escape_regex`
 
-## default\_name
+## `default_name`
 
-## stop\_at\_end
+## `stop_at_end`
 
-## ignore\_empty\_prelude
+## `ignore_empty_prelude`
 
-## enable\_escapes
+## `enable_escapes`
 
 # PRIVATE METHODS
 
-## \_\_add\_line
+## `__add_line`
 
-## \_default\_header\_regex
+## `_default_header_regex`
 
-## \_default\_empty\_line\_regex
+## `_default_empty_line_regex`
 
-## \_default\_document\_end\_regex
+## `_default_document_end_regex`
 
-## \_default\_line\_escape\_regex
+## `_default_line_escape_regex`
 
-## \_default\_default\_name
+## `_default_default_name`
 
-## \_default\_stop\_at\_end
+## `_default_stop_at_end`
 
-## \_default\_ignore\_empty\_prelude
+## `_default_ignore_empty_prelude`
 
-## \_default\_enable\_escapes
+## `_default_enable_escapes`
 
 # PRIVATE FUNCTIONS
 
-## \_croak
+## `_croak`
 
-## \_isa\_regexp
+## `_isa_regexp`
 
-## \_isa\_boolean
+## `_isa_boolean`
 
-## \_isa\_boolean
+## `_isa_boolean`
 
-## \_regex\_type
+## `_regex_type`
 
-## \_string\_type
+## `_string_type`
 
-## \_boolean\_type
+## `_boolean_type`
 
 {
     "namespace":"String::Sections",

@@ -25,11 +25,11 @@ use Moo 1.000008;
 sub _croak   { require Carp;         goto &Carp::croak; }
 sub _blessed { require Scalar::Util; goto &Scalar::Util::blessed }
 
-=attr sections
+=attr C<sections>
 
 =cut
 
-=method sections
+=method C<sections>
 
     my $sections = $result->sections;
     for my $key( keys %{$sections}) {
@@ -46,20 +46,20 @@ has 'sections' => (
   },
 );
 
-=p_attr _current
+=p_attr C<_current>
 
 =cut
 
-=method set_current
+=method C<set_current>
 
     $result->set_current('foo');
 
-=method has_current
+=method C<has_current>
 
     if ( $result->has_current ){
     }
 
-=p_method _current
+=p_method C<_current>
 
     my $current = $result->_current;
 
@@ -80,7 +80,7 @@ has '_section_names' => (
     builder => sub { return [] }
 );
 
-=method section
+=method C<section>
 
     my $ref = $result->section( $name );
     print ${$ref};
@@ -89,7 +89,9 @@ has '_section_names' => (
 
 sub section { return $_[0]->sections->{ $_[1] } }
 
-=method section_names
+=method C<section_names>
+
+This contains the names of the sections in the order they were found/inserted.
 
     my @names = $result->section_names;
 
@@ -97,9 +99,14 @@ sub section { return $_[0]->sections->{ $_[1] } }
 
 sub section_names { return ( my @list = @{ $_[0]->_section_names } ) }
 
+
+=method C<section_names_sorted>
+
+=cut
+
 sub section_names_sorted { return ( my @list = sort @{ $_[0]->_section_names } ) }
 
-=method has_section
+=method C<has_section>
 
     if ( $result->has_section($name) ) {
         ...
@@ -109,7 +116,7 @@ sub section_names_sorted { return ( my @list = sort @{ $_[0]->_section_names } )
 
 sub has_section { return exists $_[0]->sections->{ $_[1] } }
 
-=method set_section
+=method C<set_section>
 
     $result->set_section($name, \$data);
 
@@ -123,7 +130,7 @@ sub set_section {
     return;
 }
 
-=method append_data_to_current_section
+=method C<append_data_to_current_section>
 
     # Unitialise slot
     $result->append_data_to_current_section();
@@ -144,7 +151,7 @@ sub append_data_to_current_section {
   return;
 }
 
-=method append_data_to_section
+=method C<append_data_to_section>
 
     # Unitialise slot
     $result->append_data_to_current_section( $name );
@@ -165,7 +172,7 @@ sub append_data_to_section {
   return;
 }
 
-=method shallow_clone
+=method C<shallow_clone>
 
     my $clone = $result->shallow_clone;
 
@@ -184,7 +191,7 @@ sub shallow_clone {
   return $instance;
 }
 
-=method shallow_merge
+=method C<shallow_merge>
 
     my $merged = $result->shallow_merge( $other );
 
@@ -209,7 +216,7 @@ sub shallow_merge {
   return $instance;
 }
 
-=p_method _compose_section
+=p_method C<_compose_section>
 
     my $str = $result->_compose_section('bar');
 
@@ -219,7 +226,7 @@ sub _compose_section {
   return sprintf qq[__[%s]__\n%s], $_[1], ${ $_[0]->sections->{ $_[1] } };
 }
 
-=method to_s
+=method C<to_s>
 
     my $str = $result->to_s
 

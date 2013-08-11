@@ -121,9 +121,9 @@ And the main class is a factory for L<< C<String::Sections::Result>|String::Sect
 
 =cut
 
-=method new
+=method C<new>
 
-=method new( %args )
+=method C<new( %args )>
 
   my $object = String::Sections->new();
 
@@ -131,13 +131,13 @@ And the main class is a factory for L<< C<String::Sections::Result>|String::Sect
 
 =cut
 
-=p_fn _croak
+=p_fn C<_croak>
 
 =cut
 
 sub _croak { require Carp; goto &Carp::croak; }
 
-=p_method __add_line
+=p_method C<__add_line>
 
 =cut
 
@@ -174,7 +174,7 @@ sub __add_line {
   return 1;
 }
 
-=method load_list ( @strings )
+=method C<load_list ( @strings )>
 
   my @strings = <$fh>;
 
@@ -219,7 +219,7 @@ sub load_list {
   return $result_ob;
 }
 
-=method load_string
+=method C<load_string>
 
 TODO
 
@@ -230,7 +230,7 @@ sub load_string {
   return _croak('Not Implemented');
 }
 
-=method load_filehandle( $fh )
+=method C<load_filehandle( $fh )>
 
   my $result = $object->load_filehandle( $fh )
 
@@ -260,7 +260,7 @@ sub load_filehandle {
 # Defaults to _default_*_regex.
 #
 
-=p_fn _isa_regexp
+=p_fn C<_isa_regexp>
 
 =cut
 
@@ -270,7 +270,7 @@ sub _isa_regexp {
   return _croak('Not a Regexp');
 }
 
-=p_fn _isa_boolean
+=p_fn C<_isa_boolean>
 
 =cut
 
@@ -282,7 +282,7 @@ sub _isa_string {
   return;
 }
 
-=p_fn _isa_boolean
+=p_fn C<_isa_boolean>
 
 =cut
 
@@ -293,7 +293,7 @@ sub _isa_boolean {
   return;
 }
 
-=p_fn _regex_type
+=p_fn C<_regex_type>
 
 =cut
 
@@ -302,7 +302,7 @@ sub _regex_type {
   return ( is => 'ro', isa => \&_isa_regexp, builder => '_default_' . $name, lazy => 1 );
 }
 
-=p_fn _string_type
+=p_fn C<_string_type>
 
 =cut
 
@@ -311,7 +311,7 @@ sub _string_type {
   return ( is => 'ro', isa => \&_isa_string, builder => '_default_' . $name, lazy => 1 );
 }
 
-=p_fn _boolean_type
+=p_fn C<_boolean_type>
 
 =cut
 
@@ -320,41 +320,41 @@ sub _boolean_type {
   return ( is => 'ro', isa => \&_isa_boolean, builder => '_default_' . $name, lazy => 1 );
 }
 
-=attr header_regex
+=attr C<header_regex>
 
-=method header_regex
+=method C<header_regex>
 
 =cut
 
 has 'header_regex' => _regex_type('header_regex');
 
-=attr empty_line_regex
+=attr C<empty_line_regex>
 
-=method empty_line_regex
+=method C<empty_line_regex>
 
 =cut
 
 has 'empty_line_regex' => _regex_type('empty_line_regex');
 
-=attr document_end_regex
+=attr C<document_end_regex>
 
-=method document_end_regex
+=method C<document_end_regex>
 
 =cut
 
 has 'document_end_regex' => _regex_type('document_end_regex');
 
-=attr line_escape_regex
+=attr C<line_escape_regex>
 
-=method line_escape_regex
+=method C<line_escape_regex>
 
 =cut
 
 has 'line_escape_regex' => _regex_type('line_escape_regex');
 
-=attr default_name
+=attr C<default_name>
 
-=method default_name
+=method C<default_name>
 
 =cut
 
@@ -362,25 +362,25 @@ has 'default_name' => _string_type('default_name');
 
 # Boolean Accessors
 
-=attr stop_at_end
+=attr C<stop_at_end>
 
-=method stop_at_end
+=method C<stop_at_end>
 
 =cut
 
 has 'stop_at_end' => _boolean_type('stop_at_end');
 
-=attr ignore_empty_prelude
+=attr C<ignore_empty_prelude>
 
-=method ignore_empty_prelude
+=method C<ignore_empty_prelude>
 
 =cut
 
 has 'ignore_empty_prelude' => _boolean_type('ignore_empty_prelude');
 
-=attr enable_escapes
+=attr C<enable_escapes>
 
-=method enable_escapes
+=method C<enable_escapes>
 
 =cut
 
@@ -388,7 +388,7 @@ has 'enable_escapes' => _boolean_type('enable_escapes');
 
 # Default values for various attributes.
 
-=p_method _default_header_regex
+=p_method C<_default_header_regex>
 
 =cut
 
@@ -405,7 +405,7 @@ sub _default_header_regex {
     }msx;
 }
 
-=p_method _default_empty_line_regex
+=p_method C<_default_empty_line_regex>
 
 =cut
 
@@ -417,7 +417,7 @@ sub _default_empty_line_regex {
   }msx;
 }
 
-=p_method _default_document_end_regex
+=p_method C<_default_document_end_regex>
 
 =cut
 
@@ -428,7 +428,7 @@ sub _default_document_end_regex {
   }msx;
 }
 
-=p_method _default_line_escape_regex
+=p_method C<_default_line_escape_regex>
 
 =cut
 
@@ -439,25 +439,25 @@ sub _default_line_escape_regex {
   }msx;
 }
 
-=p_method _default_default_name
+=p_method C<_default_default_name>
 
 =cut
 
 sub _default_default_name { return }
 
-=p_method _default_stop_at_end
+=p_method C<_default_stop_at_end>
 
 =cut
 
 sub _default_stop_at_end { return }
 
-=p_method _default_ignore_empty_prelude
+=p_method C<_default_ignore_empty_prelude>
 
 =cut
 
 sub _default_ignore_empty_prelude { return 1 }
 
-=p_method _default_enable_escapes
+=p_method C<_default_enable_escapes>
 
 =cut
 
