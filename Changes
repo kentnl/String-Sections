@@ -1,5 +1,23 @@
 Release history for String-Sections
 
+0.3.1 2013-08-30T20:45:10Z
+ [!Minor]
+ - Bump to get newer Test::Compile
+
+ [Dependencies::Added / develop requires]
+ - Test::Kwalitee 1.08
+
+ [Dependencies::Added / test requires]
+ - IO::Handle
+ - IPC::Open3
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.8.0 → v1.8.2
+
+ [Dependencies::Removed / test requires]
+ - Capture::Tiny
+ - blib
+
 0.3.0 2013-08-11T07:11:18Z
  [!Major]
  - section_names now retains document order where possible.

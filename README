@@ -2,7 +2,7 @@ NAME
     String::Sections - Extract labeled groups of sub-strings from a string.
 
 VERSION
-    version 0.3.0
+    version 0.3.1
 
 SYNOPSIS
       use String::Sections;
