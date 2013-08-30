@@ -5,7 +5,7 @@ perl:
   - "5.18"
   - "5.19"
 branches:
-  only: 
+  only:
     - "build/master"
     - "releases"
 
