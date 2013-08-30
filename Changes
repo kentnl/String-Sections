@@ -1,5 +1,7 @@
 Release history for String-Sections
 
+0.3.1 2013-08-30T20:40:21Z
+
 0.3.0 2013-08-11T07:11:18Z
  [!Major]
  - section_names now retains document order where possible.
