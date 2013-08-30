@@ -1,6 +1,8 @@
 Release history for String-Sections
 
 {{$NEXT}}
+
+0.3.1 2013-08-30T20:45:10Z
  [!Minor]
  - Bump to get newer Test::Compile
 
