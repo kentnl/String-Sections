@@ -17,7 +17,7 @@ my %module_build_args = (
     "Kent Fredric <kentnl\@cpan.org>"
   ],
   "dist_name" => "String-Sections",
-  "dist_version" => "0.3.1",
+  "dist_version" => "0.3.2",
   "license" => "perl",
   "module_name" => "String::Sections",
   "recommends" => {},
@@ -34,6 +34,7 @@ my %module_build_args = (
   "script_files" => [],
   "test_requires" => {
     "Data::Dump" => 0,
+    "File::Spec" => 0,
     "FindBin" => 0,
     "IO::Handle" => 0,
     "IPC::Open3" => 0,
