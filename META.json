@@ -92,9 +92,6 @@
    },
    "version" : "0.3.2",
    "x_BuiltWith" : {
-      "failures" : {
-         "Types::Standard" : "module was not found in INC"
-      },
       "modules" : {
          "Carp" : "1.32",
          "Data::Dump" : "1.22",
@@ -117,6 +114,7 @@
          "Test::More" : "0.98",
          "Test::Pod" : "1.48",
          "Test::Pod::Coverage" : "1.08",
+         "Types::Standard" : "0.026",
          "lib" : "0.63",
          "strict" : "1.08",
          "version" : "0.9904",
