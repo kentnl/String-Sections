@@ -1,6 +1,14 @@
 Release history for String-Sections
 
 {{$NEXT}}
+ [00 Minor]
+ - Attempt to avoid Test::Compile bugs on Win32
+
+ [Dependencies::Added / test requires]
+ - File::Spec
+
+ [Dependencies::Changed / develop suggests]
+ - Dist::Zilla::PluginBundle::Author::KENTNL v1.8.2 → v1.8.3
 
 0.3.1 2013-08-30T20:45:10Z
  [!Minor]
