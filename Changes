@@ -1,6 +1,6 @@
 Release history for String-Sections
 
-0.3.2 2013-09-26T07:27:03Z
+0.3.2 2013-09-26T07:34:17Z
  [00 Minor]
  - Attempt to avoid Test::Compile bugs on Win32
 
