@@ -2,14 +2,50 @@ use strict;
 use warnings;
 
 package String::Sections;
-BEGIN {
-  $String::Sections::AUTHORITY = 'cpan:KENTNL';
-}
-{
-  $String::Sections::VERSION = '0.3.2';
-}
-
+$String::Sections::VERSION = '0.003003';
 # ABSTRACT: Extract labeled groups of sub-strings from a string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28,7 +64,87 @@ our $TYPE_INPUT_LIST      = ArrayRef [Str];
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 sub _croak { require Carp; goto &Carp::croak; }
+
+
+
 
 
 sub __add_line {
@@ -65,6 +181,31 @@ sub __add_line {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 sub load_list {
   my ( $self, @rest ) = @_;
   $TYPE_INPUT_LIST->assert_valid( \@rest );
@@ -86,10 +227,20 @@ sub load_list {
 }
 
 
+
+
+
+
+
 sub load_string {
   my ( $self, $string ) = @_;
   return _croak('Not Implemented');
 }
+
+
+
+
+
 
 
 sub load_filehandle {
@@ -119,10 +270,16 @@ sub load_filehandle {
 #
 
 
+
+
+
 sub _regex_type {
   my $name = shift;
   return ( is => 'ro', isa => $TYPE_REGEXP, builder => '_default_' . $name, lazy => 1 );
 }
+
+
+
 
 
 sub _string_type {
@@ -131,22 +288,50 @@ sub _string_type {
 }
 
 
+
+
+
 sub _boolean_type {
   my $name = shift;
   return ( is => 'ro', isa => $TYPE_BOOL, builder => '_default_' . $name, lazy => 1 );
 }
 
 
+
+
+
+
+
 has 'header_regex' => _regex_type('header_regex');
+
+
+
+
+
 
 
 has 'empty_line_regex' => _regex_type('empty_line_regex');
 
 
+
+
+
+
+
 has 'document_end_regex' => _regex_type('document_end_regex');
 
 
+
+
+
+
+
 has 'line_escape_regex' => _regex_type('line_escape_regex');
+
+
+
+
+
 
 
 has 'default_name' => _string_type('default_name');
@@ -154,15 +339,33 @@ has 'default_name' => _string_type('default_name');
 # Boolean Accessors
 
 
+
+
+
+
+
 has 'stop_at_end' => _boolean_type('stop_at_end');
+
+
+
+
+
 
 
 has 'ignore_empty_prelude' => _boolean_type('ignore_empty_prelude');
 
 
+
+
+
+
+
 has 'enable_escapes' => _boolean_type('enable_escapes');
 
 # Default values for various attributes.
+
+
+
 
 
 sub _default_header_regex {
@@ -179,6 +382,9 @@ sub _default_header_regex {
 }
 
 
+
+
+
 sub _default_empty_line_regex {
   return qr{
       ^
@@ -186,6 +392,9 @@ sub _default_empty_line_regex {
       $
   }msx;
 }
+
+
+
 
 
 sub _default_document_end_regex {
@@ -196,6 +405,9 @@ sub _default_document_end_regex {
 }
 
 
+
+
+
 sub _default_line_escape_regex {
   return qr{
     \A  # Start of line
@@ -204,13 +416,25 @@ sub _default_line_escape_regex {
 }
 
 
+
+
+
 sub _default_default_name { return }
+
+
+
 
 
 sub _default_stop_at_end { return }
 
 
+
+
+
 sub _default_ignore_empty_prelude { return 1 }
+
+
+
 
 
 sub _default_enable_escapes { return }
@@ -227,7 +451,7 @@ String::Sections - Extract labeled groups of sub-strings from a string.
 
 =head1 VERSION
 
-version 0.3.2
+version 0.003003
 
 =head1 SYNOPSIS
 
@@ -443,7 +667,7 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2015 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

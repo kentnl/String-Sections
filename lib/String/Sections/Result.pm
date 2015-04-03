@@ -2,15 +2,20 @@ use strict;
 use warnings;
 
 package String::Sections::Result;
-BEGIN {
-  $String::Sections::Result::AUTHORITY = 'cpan:KENTNL';
-}
-{
-  $String::Sections::Result::VERSION = '0.3.2';
-}
-
+$String::Sections::Result::VERSION = '0.003003';
 # ABSTRACT: Glorified wrapper around a hash representing a parsed String::Sections result
 #
+
+
+
+
+
+
+
+
+
+
+
 
 
 use Moo 1.000008;
@@ -19,6 +24,17 @@ use Moo 1.000008;
 
 sub _croak   { require Carp;         goto &Carp::croak; }
 sub _blessed { require Scalar::Util; goto &Scalar::Util::blessed }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -42,6 +58,23 @@ has 'sections' => (
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 has '_current' => (
   is        => ro  =>,
   isa       => $TYPE_CURRENT,
@@ -53,6 +86,11 @@ has '_current' => (
 );
 
 
+
+
+
+
+
 has '_section_names' => (
   is   => ro =>,
   isa  => $TYPE_SECTION_NAMES,
@@ -61,22 +99,50 @@ has '_section_names' => (
 );
 
 
+
+
+
+
+
+
 sub section {
   $TYPE_SECTION_NAME->assert_valid( $_[1] );
   return $_[0]->sections->{ $_[1] };
 }
 
 
+
+
+
+
+
+
+
 sub section_names { return ( my @list = @{ $_[0]->_section_names } ) }
 
 
+
+
+
 sub section_names_sorted { return ( my @list = sort @{ $_[0]->_section_names } ) }
+
+
+
+
+
+
+
 
 
 sub has_section {
   $TYPE_SECTION_NAME->assert_valid( $_[1] );
   return exists $_[0]->sections->{ $_[1] };
 }
+
+
+
+
+
 
 
 sub set_section {
@@ -88,6 +154,14 @@ sub set_section {
   $_[0]->sections->{ $_[1] } = $_[2];
   return;
 }
+
+
+
+
+
+
+
+
 
 
 sub append_data_to_current_section {
@@ -102,6 +176,14 @@ sub append_data_to_current_section {
   }
   return;
 }
+
+
+
+
+
+
+
+
 
 
 sub append_data_to_section {
@@ -119,6 +201,15 @@ sub append_data_to_section {
 }
 
 
+
+
+
+
+
+
+
+
+
 sub shallow_clone {
   my $class = _blessed( $_[0] ) || $_[0];
   my $instance = $class->new();
@@ -127,6 +218,18 @@ sub shallow_clone {
   }
   return $instance;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 sub shallow_merge {
@@ -142,10 +245,20 @@ sub shallow_merge {
 }
 
 
+
+
+
+
+
 sub _compose_section {
   $TYPE_SECTION_NAME->assert_valid( $_[1] );
   return sprintf qq[__[%s]__\n%s], $_[1], ${ $_[0]->sections->{ $_[1] } };
 }
+
+
+
+
+
 
 
 sub to_s {
@@ -165,7 +278,7 @@ String::Sections::Result - Glorified wrapper around a hash representing a parsed
 
 =head1 VERSION
 
-version 0.3.2
+version 0.003003
 
 =head1 METHODS
 
@@ -284,7 +397,7 @@ Kent Fredric <kentnl@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2013 by Kent Fredric <kentnl@cpan.org>.
+This software is copyright (c) 2015 by Kent Fredric <kentnl@cpan.org>.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

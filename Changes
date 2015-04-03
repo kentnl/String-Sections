@@ -1,5 +1,7 @@
 Release history for String-Sections
 
+0.003003 2015-04-03T22:56:43Z e5bd1b5
+
 0.3.2 2013-09-26T07:43:21Z
  [00 Minor]
  - Attempt to avoid Test::Compile bugs on Win32
@@ -82,9 +84,8 @@ Release history for String-Sections
 
  [Tests]
  - Much more thoughrough coverage of load_file and load_list behaviour.
- - Generated tests Facilitated by an arsenal of configuration and
-   templates, using String::Sections to generate the templated tests as
-   well.
+ - Generated tests Facilitated by an arsenal of configuration and templates, using String::Sections to generate the
+   templated tests as well.
  - devel/compile_test_templates.pl is thus an example of potential usage.
 
 0.2.1 2013-06-21T12:10:27Z
@@ -158,8 +159,7 @@ Release history for String-Sections
  - No longer recommends Sub::Name for develop time.
 
  [Documentation]
- - Eliminated Documentation referring to experiemental ideas that are now
-   righly removed.
+ - Eliminated Documentation referring to experiemental ideas that are now righly removed.
 
  [Features]
  - Implemented load_filehandle
