@@ -31,11 +31,6 @@ layout/self_structure.dot
 layout/self_structure.png
 lib/String/Sections.pm
 lib/String/Sections/Result.pm
-maint-travis-ci/README.mkdn
-maint-travis-ci/merge_travis_yml.pl
-maint-travis-ci/sterilize_env.pl
-maint-travis-ci/sync_tree.pl
-maint-travis-ci/yamls/sterile.yaml
 misc/Changes.deps
 misc/Changes.deps.all
 misc/Changes.deps.dev
